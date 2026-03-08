@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: sans-serif; background-color: #1a1a1a; color: white; display: flex; justify-content: center; padding: 50px; }
+        .form-box { background: #252525; padding: 30px; border-radius: 15px; width: 400px; border: 2px solid #4caf50; }
+        input, textarea, select { width: 100%; padding: 10px; margin: 10px 0 20px 0; background: #333; border: 1px solid #444; color: white; border-radius: 5px; }
+        .submit-btn { width: 100%; background: #4caf50; color: white; border: none; padding: 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="form-box">
+    <h2>Publier un nouveau Mod</h2>
+    <form action="https://formspree.io/f/xwvrkgde" method="POST">
+        <label>Nom du Mod</label>
+        <input type="text" name="nom_mod" required>
+
+        <label>Catégorie</label>
+        <select name="categorie">
+            <option>Tracteurs</option>
+            <option>Moissonneuses</option>
+            <option>Outils</option>
+            <option>Maps</option>
+        </select>
+
+        <label>Lien de téléchargement</label>
+        <input type="url" name="lien_mod" placeholder="https://..." required>
+
+        <label>Description</label>
+        <textarea name="description" rows="4"></textarea>
+
+        <button type="submit" class="submit-btn">METTRE EN LIGNE</button>
+        <a href="mods.html" style="color: gray; display: block; text-align: center; margin-top: 15px; text-decoration: none;">Annuler</a>
+    </form>
+</div>
+
+</body>
+</html>
