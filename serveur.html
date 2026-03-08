@@ -8,10 +8,12 @@
     <div style="flex-grow: 1; display: flex; justify-content: center; margin-left: 150px;">
         <a href="index.html" style="color: white; margin: 0 15px; text-decoration: none; font-weight: bold;">ACCUEIL</a>
         <a href="map.html" style="color: white; margin: 0 15px; text-decoration: none; font-weight: bold;">MAP</a>
-        <a href="#contact" style="color: white; margin: 0 15px; text-decoration: none; font-weight: bold;">CONTACT</a>
+        <a href="team.htmL" style="color: white; margin: 0 15px; text-decoration: none; font-weight: bold;">EQUIPE</a>
+        <a href="serveur.html" style="color: white; margin: 0 15px; text-decoration: none; font-weight: bold;">SERVEURS</a>
         <a href="mods.html" style="color: white; margin: 0 15px; text-decoration: none; font-weight: bold;">MODS</a>
-        <a href="team.htmL" style="color: white; margin: 0 15px; text-decoration: none; font-weight: bold;">La team</a>
-        <a href="serveur.html" style="color: white; margin: 0 15px; text-decoration: none; font-weight: bold;"> serveur</a>
+        <a href="#contact" style="color: white; margin: 0 15px; text-decoration: none; font-weight: bold;">CONTACT</a>
+        
+        
     </div>
 
     <a href="https://discord.gg/4hpynqxrtp" target="_blank" style="
@@ -40,46 +42,87 @@
 
 
 
-<div class="farming-card">
-    <div class="card-header">
-        <span class="icon">🚜</span>
-        <div>
-            <h2 id="srv-name">NOM DU SERVEUR ICI</h2>
-            <span class="badge">SESSION ACTIVE</span>
-        </div>
-    </div>
+<div class="main-wrapper">
 
-    <div class="card-body">
-        <p class="desc">
-            REMPLACE CE TEXTE PAR TA DESCRIPTION ICI.
-        </p>
-
-        <div class="stats-grid">
-            <div class="stat">
-                <span class="label">👥 Joueurs</span>
-                <span id="player-count" class="value">0 / 16</span>
-            </div>
-            <div class="stat">
-                <span class="label">📦 Mods</span>
-                <span class="value">NOMBRE ICI</span>
-            </div>
-            <div class="stat">
-                <span class="label">🗺️ Map</span>
-                <span class="value">NOM MAP ICI</span>
-            </div>
-            <div class="stat">
-                <span class="label">⚙️ Style</span>
-                <span class="value">RP / SERIEUX</span>
+    <div class="farming-card">
+        <div class="card-header">
+            <span class="icon">🚜</span>
+            <div>
+                <h2 id="srv-name">AgriFarm Discord</h2>
+                <span class="badge">Hors Ligne</span>
             </div>
         </div>
+        <div class="card-body">
+            <p class="desc">Serveur officiel fs22 d'AgriFarm</p>
+            <div class="stats-grid">
+                <div class="stat">
+                    <span class="label">👥 Joueurs</span>
+                    <span id="player-count-1" class="value">0 / 16</span>
+                </div>
+                <div class="stat">
+                    <span class="label">📦 Mods</span>
+                    <span class="value">2</span>
+                </div>
+                <div class="stat">
+                    <span class="label">🗺️ Map</span>
+                    <span class="value">haut Beleron</span>
+                </div>
+                <div class="stat">
+                    <span class="label">⚙️ Style</span>
+                    <span class="value">Chill</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">Propriétaire : MultiGame</div>
     </div>
 
-    <div class="card-footer">
-        Propriétaire : MultiGame (devoirs)
+    <div class="farming-card">
+        <div class="card-header">
+            <span class="icon">🚜</span>
+            <div>
+                <h2 id="srv-name-2">Serveur AgriFarm 2</h2>
+                <span class="badge" style="background: #747f8d;">HORS LIGNE</span>
+            </div>
+        </div>
+        <div class="card-body">
+            <p class="desc">Serveur officiel fs25 d'AgriFarm</p>
+            <div class="stats-grid">
+                <div class="stat">
+                    <span class="label">👥 Joueurs</span>
+                    <span id="player-count-2" class="value">0 / 16</span>
+                </div>
+                <div class="stat">
+                    <span class="label">📦 Mods</span>
+                    <span class="value">60</span>
+                </div>
+                <div class="stat">
+                    <span class="label">🗺️ Map</span>
+                    <span class="value">...</span>
+                </div>
+                <div class="stat">
+                    <span class="label">⚙️ Style</span>
+                    <span class="value">Chill</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">Propriétaire : Devoirs</div>
     </div>
+
 </div>
 
 <style>
+    /* Le wrapper qui centre tout */
+    .main-wrapper {
+        display: flex;
+        flex-wrap: wrap; /* Permet de passer à la ligne sur téléphone */
+        justify-content: center; /* Centre horizontalement */
+        align-items: flex-start;
+        gap: 20px; /* Espace entre les deux cadres */
+        padding: 20px;
+        background-color: #444444; /* Fond de page sombre */
+        min-height: 100vh;
+    }
+
     .farming-card {
         background-color: #23272a;
         color: white;
@@ -88,38 +131,27 @@
         border-radius: 12px;
         border: 1px solid #3e4147;
         padding: 20px;
-        margin: 20px auto;
         box-shadow: 0 10px 20px rgba(0,0,0,0.4);
     }
+
     .card-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
     .icon { font-size: 35px; background: #2f3136; padding: 8px; border-radius: 8px; }
     .card-header h2 { margin: 0; font-size: 17px; }
-    .badge { background: #43b581; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
-    .desc { font-size: 13px; color: #b9bbbe; line-height: 1.4; margin: 10px 0; border-bottom: 1px solid #3e4147; padding-bottom: 10px;}
+    .badge { background: #747f8d; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+    .desc { font-size: 13px; color: #b9bbbe; line-height: 1.4; margin: 10px 0; border-bottom: 1px solid #3e4147; padding-bottom: 10px; height: 40px; overflow: hidden;}
     .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .stat { background: #2f3136; padding: 8px; border-radius: 6px; }
     .label { font-size: 10px; color: #72767d; text-transform: uppercase; display: block; }
     .value { font-size: 13px; font-weight: bold; }
     .card-footer { margin-top: 15px; font-size: 10px; color: #72767d; text-align: center; }
-</style>
 
-<script>
-    (function() {
-        const myId = "1136704051971624992";
-        async function updateSrv() {
-            try {
-                const r = await fetch(`https://api.lanyard.rest/v1/users/${myId}`);
-                const { data } = await r.json();
-                const fs = data.activities.find(a => a.name.includes("Farming Simulator 22"));
-                if (fs && fs.party && fs.party.size) {
-                    document.getElementById('player-count').innerText = `${fs.party.size[0]} / ${fs.party.size[1]}`;
-                }
-            } catch (e) {}
+    /* Ajustement pour mobile */
+    @media (max-width: 700px) {
+        .farming-card {
+            width: 90%; /* Prend la largeur du téléphone */
         }
-        updateSrv(); setInterval(updateSrv, 20000);
-    })();
-</script>
-
+    }
+</style>
 
 <style>
 
