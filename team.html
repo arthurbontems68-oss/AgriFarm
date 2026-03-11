@@ -106,17 +106,63 @@
 
 <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; padding: 20px; font-family: 'Segoe UI', sans-serif;">
 
-    <div class="discord-card-custom">
-        <div class="profile-header">
-            <div class="avatar-container">
-                <img src="smur.jpg" src="" alt="">
-                <div id="ds-dot-1" class="offline"></div>
-            </div>
-            <div>
-                <div style="font-weight: bold; font-size: 16px; color: white;">MultiGame</div>
-                
-                <div class="badge-fonda" style="background-color: #eb459e;">👑 Fondateur</div>
-            </div>
+  
+<div class="discord-card-custom">
+    <div class="profile-header">
+        <div class="avatar-container">
+            <img src="smur.jpg" src="" alt="">
+            <div id="ds-dot-1" class="offline"></div>
+        </div>
+        <div>
+            <div style="font-weight: bold; font-size: 16px; color: white;">MultiGame</div>
+            
+            <div id="badge-admin" class="badge-fonda" style="background-color: #eb459e; cursor: pointer;" onclick="accesAdmin()">👑 Fondateur</div>
+
+<script>
+function accesAdmin() {
+    // Demande le mot de passe
+    const mdp = prompt("Veuillez entrer le mot de passe administrateur :");
+    const badge = document.getElementById("badge-admin");
+    
+    // Remplace 'admin123' par le mot de passe de ton choix
+    if (mdp === "admin123") {
+        // Changement visuel immédiat
+        badge.style.backgroundColor = "orange";
+        badge.innerHTML = "⏳ Chargement...";
+
+        // Attendre 3000ms (3 secondes) avant la redirection
+        setTimeout(function() {
+            window.location.href = "admin.html";
+        }, 3000);
+    } else if (mdp !== null) {
+        alert("Mot de passe incorrect !");
+    }
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          </div>
         </div>
         <div id="ds-activity-1" class="activity-style">Chargement...</div>
         
