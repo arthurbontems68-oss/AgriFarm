@@ -1,0 +1,197 @@
+<style>
+    /* Style pour le tutoriel en pleine largeur avec vidéo YouTube */
+    .tuto-container-full {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        font-family: 'Segoe UI', sans-serif;
+        box-sizing: border-box;
+    }
+
+    /* Style du bouton retour */
+    .btn-retour {
+        align-self: flex-start;
+        max-width: 900px;
+        margin: 0 auto 15px auto;
+        width: 100%;
+        display: flex;
+    }
+
+    .btn-retour a {
+        background-color: #3e4147;
+        color: white;
+        text-decoration: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: bold;
+        transition: 0.3s;
+        border: 1px solid #4f545c;
+    }
+
+    .btn-retour a:hover {
+        background-color: #4f545c;
+        border-color: #00d4ff;
+    }
+
+    .farming-card-tuto {
+        background-color: #23272a;
+        color: white;
+        width: 100%;
+        max-width: 900px; 
+        border-radius: 12px;
+        border: 1px solid #3e4147;
+        padding: 30px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+
+    .card-header-tuto { 
+        display: flex; 
+        align-items: center; 
+        gap: 20px; 
+        margin-bottom: 25px; 
+        border-bottom: 1px solid #3e4147;
+        padding-bottom: 20px;
+    }
+    
+    .icon-tuto { 
+        font-size: 45px; 
+        background: #2f3136; 
+        padding: 12px; 
+        border-radius: 12px; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+    }
+    
+    .card-header-tuto h2 { margin: 0; font-size: 24px; color: #fff; }
+    
+    .tuto-badge { 
+        background: #00d4ff; 
+        color: #1a1a1a; 
+        font-size: 11px; 
+        padding: 4px 10px; 
+        border-radius: 4px; 
+        font-weight: bold; 
+        text-transform: uppercase;
+        margin-top: 5px;
+        display: inline-block;
+    }
+    
+    .tuto-etape { 
+        display: flex; 
+        align-items: center; 
+        gap: 20px; 
+        margin-bottom: 15px; 
+        color: #eee; 
+        font-size: 15px; 
+        text-align: left; 
+    }
+    
+    .num-rond { 
+        background: #00d4ff; 
+        color: #1a1a1a; 
+        font-weight: bold; 
+        width: 28px; 
+        height: 28px; 
+        border-radius: 50%; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        flex-shrink: 0; 
+        font-size: 14px; 
+    }
+
+    .video-container {
+        position: relative;
+        padding-bottom: 56.25%;
+        height: 0;
+        overflow: hidden;
+        border-radius: 8px;
+        border: 2px solid #3e4147;
+        margin: 25px 0;
+        background: #000;
+    }
+
+    .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+
+    .tuto-important { 
+        background: rgba(255, 159, 67, 0.1); 
+        border-left: 5px solid #ff9f43; 
+        padding: 15px; 
+        color: #ff9f43; 
+        font-size: 14px; 
+        margin-top: 25px; 
+        border-radius: 4px; 
+        text-align: left; 
+    }
+    
+    .card-footer-tuto { 
+        margin-top: 25px; 
+        font-size: 12px; 
+        color: #72767d; 
+        text-align: center; 
+        border-top: 1px solid #3e4147;
+        padding-top: 15px;
+    }
+</style>
+
+<div class="tuto-container-full">
+    <div class="btn-retour">
+        <a href="javascript:history.back()">← Retour</a>
+    </div>
+
+    <div class="farming-card-tuto">
+        <div class="card-header-tuto">
+            <span class="icon-tuto">📦</span>
+            <div>
+                <h2>Tutoriel : Changer le fond du menu d'acceuil sur fs</h2>
+                <span class="tuto-badge">Tuto créé par MultiGame</span>
+            </div>
+        </div>
+        
+        <div class="card-body">
+            <div class="tuto-etape"><div class="num-rond">1</div><div>telecharger un de nos pack de fond sur notre site</div></div>
+            <div class="tuto-etape"><div class="num-rond">2</div><div>DeZiper le fichier</div></div>
+            <div class="tuto-etape"><div class="num-rond">3</div><div>Copier tout les fichiers</div></div>
+            <div class="tuto-etape"><div class="num-rond">4</div><div>Redez vous dans </div></div>
+            <div class="tuto-etape"><div class="num-rond">5</div><div>coller les fichier et remplacez les</div></div>
+            <div class="tuto-etape"><div class="num-rond">6</div><div>Relancer votre jeu</div></div>
+            
+            <div class="video-container">
+                <iframe 
+                    src="https://www.youtube.com/embed/tfqakfDbrxQ" 
+                    title="Tuto Shader" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    referrerpolicy="strict-origin-when-cross-origin"
+                    allowfullscreen>
+                </iframe>
+            </div>
+            
+            <div class="tuto-important">
+                <strong>ATTENTION :</strong> Avant de faire le tuto, pensez bien à fermer votre jeu.
+            </div>
+        </div>
+        
+        <div class="card-footer-tuto">
+            Un problème ? Suis bien la vidéo ou contacte un admin sur Discord.
+        </div>
+    </div>
+</div>
+
+<style>
+  :root {
+    --couleur-principale: #444444;
+  }
+  body {
+    background-color: var(--couleur-principale);
+  }
+</style>
