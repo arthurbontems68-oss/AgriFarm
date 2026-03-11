@@ -213,11 +213,11 @@
 <h1 style="margin: 0; text-align: center; font-family: sans-serif;">Vote dès maintenant pour le meilleur discord !</h1>
 
 <div style="text-align: center; width: 100%; padding: 20px; box-sizing: border-box;">
-    
+    <input type="text" id="pseudoInput" placeholder="Ton pseudo Discord" style="padding: 10px 20px; border-radius: 25px; border: 2px solid #6c5ce7; margin-bottom: 15px; outline: none; text-align: center; font-family: sans-serif;">
+    <br>
     <button id="btnVote" onclick="voter()">Voter maintenant ✨</button>
     
     <div id="message" style="margin-top: 15px; font-size: 16px; color: #ffffff;"></div>
-
 </div>
 
 <style>
@@ -243,6 +243,7 @@
 <script>
     const btn = document.getElementById('btnVote');
     const msg = document.getElementById('message');
+    const pseudoInp = document.getElementById('pseudoInput'); // Récupération du champ pseudo
     // Temps réduit à 15 minutes (15 * 60 * 1000 ms)
     const VOTE_COOLDOWN = 15 * 60 * 1000; 
 
@@ -253,12 +254,14 @@
             const timeLeft = VOTE_COOLDOWN - (now - lastVote);
             if (timeLeft > 0) {
                 btn.disabled = true;
+                if(pseudoInp) pseudoInp.style.display = "none"; // Cache la case pendant le cooldown
                 updateTimer(timeLeft);
                 const interval = setInterval(() => {
                     const remaining = VOTE_COOLDOWN - (new Date().getTime() - lastVote);
                     if (remaining <= 0) {
                         clearInterval(interval);
                         btn.disabled = false;
+                        if(pseudoInp) pseudoInp.style.display = "inline-block"; // Réaffiche la case
                         msg.innerText = "";
                     } else {
                         updateTimer(remaining);
@@ -275,6 +278,19 @@
     }
 
     function voter() {
+        const pseudo = pseudoInp.value.trim() || "Anonyme"; // Récupère le pseudo
+
+        // --- PARTIE DISCORD ---
+        const webhookURL = "https://discord.com/api/webhooks/1481287716934123591/ol8DZscnh8iAm51z0LNTHOMSkFqMEj9j9pPSESW8WDBKOsFM8bwRbbDilUtU-EyBjalM"; // Remplace par ton lien
+        fetch(webhookURL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                content: `🚀 **Nouveau vote !** \`${pseudo}\` vient de voter sur AgriFarm.`
+            })
+        });
+        // ----------------------
+
         confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
         localStorage.setItem('lastVoteTime', new Date().getTime());
         btn.disabled = true;
@@ -282,7 +298,6 @@
     }
     checkCooldown();
 </script>
-
 <div style="background-color: #444444; border: 2px solid; #ffc65d;border-radius: 15px;color: #444444; padding: 20px; text-align: center; font-family: sans-serif;"></div>
 
 
