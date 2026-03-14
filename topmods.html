@@ -41,18 +41,22 @@
     function getNextSaturdayNoon() {
         let now = new Date();
         let nextSat = new Date();
+        // Calculer le prochain samedi (6)
         let dayDiff = (6 - now.getDay() + 7) % 7;
+        // Si on est samedi avant midi, on reste sur aujourd'hui, sinon samedi prochain
         if (dayDiff === 0 && now.getHours() >= 12) dayDiff = 7;
-        
+        if (dayDiff === 0 && now.getHours() < 12) dayDiff = 0;
+        else if (dayDiff === 0) dayDiff = 7;
+
         nextSat.setDate(now.getDate() + dayDiff);
         nextSat.setHours(12, 0, 0, 0);
         return nextSat.getTime();
     }
 
-    let targetDate = localStorage.getItem('ribbonTimerEndDate');
+    let targetDate = localStorage.getItem('ribbonTimerEndDate_v2');
     if (!targetDate || new Date().getTime() > targetDate) {
         targetDate = getNextSaturdayNoon();
-        localStorage.setItem('ribbonTimerEndDate', targetDate);
+        localStorage.setItem('ribbonTimerEndDate_v2', targetDate);
     }
  
     const interval = setInterval(() => {
@@ -62,7 +66,7 @@
         if (distance < 0) {
             clearInterval(interval);
             display.innerHTML = "Terminé !";
-            localStorage.removeItem('ribbonTimerEndDate');
+            localStorage.removeItem('ribbonTimerEndDate_v2');
             return;
         }
  
@@ -297,15 +301,17 @@
             let nextSat = new Date();
             let dayDiff = (6 - now.getDay() + 7) % 7;
             if (dayDiff === 0 && now.getHours() >= 12) dayDiff = 7;
+            if (dayDiff === 0 && now.getHours() < 12) dayDiff = 0;
+            
             nextSat.setDate(now.getDate() + dayDiff);
             nextSat.setHours(12, 0, 0, 0);
             return nextSat.getTime();
         }
 
-        let endTime = localStorage.getItem('vote_end_date_v3');
+        let endTime = localStorage.getItem('vote_end_date_v4');
         if (!endTime || new Date().getTime() > endTime) {
             endTime = getNextSaturdayNoon();
-            localStorage.setItem('vote_end_date_v3', endTime);
+            localStorage.setItem('vote_end_date_v4', endTime);
         }
  
         const dateId = new Date().toDateString();
@@ -333,12 +339,10 @@
  
         function checkVotes() {
             for (let i = 1; i <= 5; i++) {
-                // CHANGÉ : score_m_v2 en score_m_v3 pour RESET
                 const val = localStorage.getItem('score_m_v3_' + i) || 0;
                 const scoreElem = document.getElementById('nb-' + i);
                 if (scoreElem) scoreElem.innerText = val;
             }
-            // CHANGÉ : global_vote_v2 en global_vote_v3 pour RESET
             if (localStorage.getItem('global_vote_v3') === dateId || isExpired) {
                 disableAll(isExpired);
             }
