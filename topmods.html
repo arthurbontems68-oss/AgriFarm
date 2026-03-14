@@ -41,9 +41,7 @@
     function getNextSaturdayNoon() {
         let now = new Date();
         let nextSat = new Date();
-        // Calcule les jours restants jusqu'à samedi (6)
         let dayDiff = (6 - now.getDay() + 7) % 7;
-        // Si on est samedi après 12h, on passe au samedi suivant
         if (dayDiff === 0 && now.getHours() >= 12) dayDiff = 7;
         
         nextSat.setDate(now.getDate() + dayDiff);
@@ -172,7 +170,7 @@
 <span class="vote-label-simple">Votes</span>
 <span class="vote-number-simple" id="nb-1">0</span>
 </div>
-<button class="vote-btn-simple" onclick="voterMod(1, 'Case')">▲ VOTER</button>
+<button class="vote-btn-simple" onclick="voterMod(1, 'Massey')">▲ VOTER</button>
 </div>
 </div>
 </div>
@@ -192,7 +190,7 @@
 <span class="vote-label-simple">Votes</span>
 <span class="vote-number-simple" id="nb-2">0</span>
 </div>
-<button class="vote-btn-simple" onclick="voterMod(2, 'Massey')">▲ VOTER</button>
+<button class="vote-btn-simple" onclick="voterMod(2, 'Fendt')">▲ VOTER</button>
 </div>
 </div>
 </div>
@@ -212,7 +210,7 @@
 <span class="vote-label-simple">Votes</span>
 <span class="vote-number-simple" id="nb-3">0</span>
 </div>
-<button class="vote-btn-simple" onclick="voterMod(3, 'New Holland')">▲ VOTER</button>
+<button class="vote-btn-simple" onclick="voterMod(3, 'John Deere')">▲ VOTER</button>
 </div>
 </div>
 </div>
@@ -232,7 +230,7 @@
 <span class="vote-label-simple">Votes</span>
 <span class="vote-number-simple" id="nb-4">0</span>
 </div>
-<button class="vote-btn-simple" onclick="voterMod(4, 'Mod 4')">▲ VOTER</button>
+<button class="vote-btn-simple" onclick="voterMod(4, 'Case')">▲ VOTER</button>
 </div>
 </div>
 </div>
@@ -252,7 +250,7 @@
 <span class="vote-label-simple">Votes</span>
 <span class="vote-number-simple" id="nb-5">0</span>
 </div>
-<button class="vote-btn-simple" onclick="voterMod(5, 'Mod 5')">▲ VOTER</button>
+<button class="vote-btn-simple" onclick="voterMod(5, 'Fiat')">▲ VOTER</button>
 </div>
 </div>
 </div>
@@ -335,23 +333,25 @@
  
         function checkVotes() {
             for (let i = 1; i <= 5; i++) {
-                const val = localStorage.getItem('score_m_v2_' + i) || 0;
+                // CHANGÉ : score_m_v2 en score_m_v3 pour RESET
+                const val = localStorage.getItem('score_m_v3_' + i) || 0;
                 const scoreElem = document.getElementById('nb-' + i);
                 if (scoreElem) scoreElem.innerText = val;
             }
-            if (localStorage.getItem('global_vote_v2') === dateId || isExpired) {
+            // CHANGÉ : global_vote_v2 en global_vote_v3 pour RESET
+            if (localStorage.getItem('global_vote_v3') === dateId || isExpired) {
                 disableAll(isExpired);
             }
         }
  
         window.voterMod = function(id, modName) {
             if (isExpired) return;
-            if (localStorage.getItem('global_vote_v2') === dateId) return;
+            if (localStorage.getItem('global_vote_v3') === dateId) return;
  
-            let s = parseInt(localStorage.getItem('score_m_v2_' + id)) || 0;
+            let s = parseInt(localStorage.getItem('score_m_v3_' + id)) || 0;
             s++;
-            localStorage.setItem('score_m_v2_' + id, s);
-            localStorage.setItem('global_vote_v2', dateId);
+            localStorage.setItem('score_m_v3_' + id, s);
+            localStorage.setItem('global_vote_v3', dateId);
             const scoreElem = document.getElementById('nb-' + id);
             if (scoreElem) scoreElem.innerText = s;
  
@@ -372,7 +372,7 @@
                 b.innerText = finished ? "CLOS" : "DÉJÀ VOTÉ";
             });
             const msgElem = document.getElementById('global-msg-simple');
-            if (!finished && localStorage.getItem('global_vote_v2') === dateId && msgElem) {
+            if (!finished && localStorage.getItem('global_vote_v3') === dateId && msgElem) {
                 msgElem.style.display = "block";
             }
         }
