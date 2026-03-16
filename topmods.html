@@ -1,7 +1,8 @@
+
 <div class="ribbon-timer" id="ribbon-timer">
-<span>Mise à jour dans :</span> <span id="timer-display">00 : 00 : 00 : 00</span>
+    <span>Mise à jour dans :</span> <span id="timer-display">00 : 00 : 00 : 00</span>
 </div>
- 
+
 <style>
     .ribbon-timer {
         position: fixed;
@@ -10,534 +11,577 @@
         width: 100%;
         background: linear-gradient(90deg, #ff9f43, #ff6b6b);
         color: #ffffff;
+        
+        /* Centrage flexible */
         display: flex;
         justify-content: center;
         align-items: center;
-        flex-wrap: wrap; 
-        gap: 10px;      
-        padding: 8px 10px; 
+        flex-wrap: wrap; /* Permet au texte de passer à la ligne sur très petit écran */
+        gap: 10px;      /* Espace entre le texte et le timer */
+        
+        padding: 8px 10px; /* Un peu plus de padding pour le confort */
         font-family: 'Segoe UI', Roboto, sans-serif;
+        
+        /* Taille de texte adaptative : ne descendra pas en dessous de 0.7rem */
         font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+        
         font-weight: 600;
         z-index: 9999;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        box-sizing: border-box; 
+        box-sizing: border-box; /* Important pour ne pas dépasser la largeur */
     }
- 
+
     #timer-display {
         font-family: 'Courier New', Courier, monospace;
         background: rgba(255, 255, 255, 0.2);
         padding: 2px 8px;
         border-radius: 3px;
-        white-space: nowrap; 
+        white-space: nowrap; /* Empêche le timer de se couper en deux */
     }
 </style>
- 
+
 <script>
 (function() {
+    const DURATION = 10 * 24 * 60 * 60 * 1000;
     const display = document.getElementById("timer-display");
     const pad = (num) => String(num).padStart(2, '0');
- 
-    function getNextSaturdayNoon() {
-        let now = new Date();
-        let nextSat = new Date();
-        // Calculer le prochain samedi (6)
-        let dayDiff = (6 - now.getDay() + 7) % 7;
-        // Si on est samedi avant midi, on reste sur aujourd'hui, sinon samedi prochain
-        if (dayDiff === 0 && now.getHours() >= 12) dayDiff = 7;
-        if (dayDiff === 0 && now.getHours() < 12) dayDiff = 0;
-        else if (dayDiff === 0) dayDiff = 7;
 
-        nextSat.setDate(now.getDate() + dayDiff);
-        nextSat.setHours(12, 0, 0, 0);
-        return nextSat.getTime();
+    let targetDate = localStorage.getItem('ribbonTimerEndDate');
+    if (!targetDate) {
+        targetDate = new Date().getTime() + DURATION;
+        localStorage.setItem('ribbonTimerEndDate', targetDate);
     }
 
-    let targetDate = localStorage.getItem('ribbonTimerEndDate_v2');
-    if (!targetDate || new Date().getTime() > targetDate) {
-        targetDate = getNextSaturdayNoon();
-        localStorage.setItem('ribbonTimerEndDate_v2', targetDate);
-    }
- 
     const interval = setInterval(() => {
         const now = new Date().getTime();
         const distance = targetDate - now;
- 
+
         if (distance < 0) {
             clearInterval(interval);
             display.innerHTML = "Terminé !";
-            localStorage.removeItem('ribbonTimerEndDate_v2');
+            localStorage.removeItem('ribbonTimerEndDate');
             return;
         }
- 
+
         const d = Math.floor(distance / (1000 * 60 * 60 * 24));
         const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         const s = Math.floor((distance % (1000 * 60)) / 1000);
- 
+
         display.innerHTML = `${pad(d)} : ${pad(h)} : ${pad(m)} : ${pad(s)}`;
     }, 1000);
 })();
 </script>
- 
- 
+
+
+
 <div style="background-color: #ffc65d; border: 2px solid #ffc65d; border-radius: 15px; color: #444444; padding: 20px; text-align: center; font-family: sans-serif;">
-<h1 style="margin: 0;">Bienvenue sur AgriFarm</h1>
+  <h1 style="margin: 0;">Bienvenue sur AgriFarm</h1>
 </div>
- 
+
 <div style="
     background-color: #1a1a1a; 
     padding: 15px 20px; 
     font-family: sans-serif; 
-    width: 90%;           
-    max-width: 800px;     
+    width: 90%;           /* Remplace les 800px fixes par un pourcentage */
+    max-width: 800px;     /* Le bloc ne dépassera jamais 800px, mais pourra rétrécir */
     margin: 20px auto; 
     border-radius: 8px; 
     display: flex; 
     justify-content: center; 
     box-sizing: border-box;
 ">
-<div style="display: flex; align-items: center; gap: 25px; flex-wrap: wrap; justify-content: center;">
-<a href="index.html" style="color: white; text-decoration: none; font-weight: bold; transition: 0.3s;" onmouseover="this.style.color='#ffc65d'" onmouseout="this.style.color='white'">ACCUEIL</a>
-<a href="map.html" style="color: white; text-decoration: none; font-weight: bold; transition: 0.3s;" onmouseover="this.style.color='#ffc65d'" onmouseout="this.style.color='white'">MAP</a>
-<a href="team.html" style="color: white; text-decoration: none; font-weight: bold; transition: 0.3s;" onmouseover="this.style.color='#ffc65d'" onmouseout="this.style.color='white'">EQUIPE</a>
-<a href="serveur.html" style="color: white; text-decoration: none; font-weight: bold; transition: 0.3s;" onmouseover="this.style.color='#ffc65d'" onmouseout="this.style.color='white'">SERVEURS</a>
-<a href="mods.html" style="color: white; text-decoration: none; font-weight: bold; transition: 0.3s;" onmouseover="this.style.color='#ffc65d'" onmouseout="this.style.color='white'">MODS</a>
-<a href="tuto.html" style="color: white; text-decoration: none; font-weight: bold; transition: 0.3s;" onmouseover="this.style.color='#ffc65d'" onmouseout="this.style.color='white'">TUTO</a>
-<a href="topmods.html" style="color: white; text-decoration: none; font-weight: bold; transition: 0.3s;" onmouseover="this.style.color='#ffc65d'" onmouseout="this.style.color='white'">TOPMODS</a>
+    
+    <div style="display: flex; align-items: center; gap: 25px; flex-wrap: wrap; justify-content: center;">
+        <a href="index.html" style="color: white; text-decoration: none; font-weight: bold; transition: 0.3s;" onmouseover="this.style.color='#ffc65d'" onmouseout="this.style.color='white'">ACCUEIL</a>
+        <a href="map.html" style="color: white; text-decoration: none; font-weight: bold; transition: 0.3s;" onmouseover="this.style.color='#ffc65d'" onmouseout="this.style.color='white'">MAP</a>
+        <a href="team.html" style="color: white; text-decoration: none; font-weight: bold; transition: 0.3s;" onmouseover="this.style.color='#ffc65d'" onmouseout="this.style.color='white'">EQUIPE</a>
+        <a href="serveur.html" style="color: white; text-decoration: none; font-weight: bold; transition: 0.3s;" onmouseover="this.style.color='#ffc65d'" onmouseout="this.style.color='white'">SERVEURS</a>
+        <a href="mods.html" style="color: white; text-decoration: none; font-weight: bold; transition: 0.3s;" onmouseover="this.style.color='#ffc65d'" onmouseout="this.style.color='white'">MODS</a>
+	<a href="tuto.html" style="color: white; text-decoration: none; font-weight: bold; transition: 0.3s;" onmouseover="this.style.color='#ffc65d'" onmouseout="this.style.color='white'">TUTO</a>
+	<a href="topmods.html" style="color: white; text-decoration: none; font-weight: bold; transition: 0.3s;" onmouseover="this.style.color='#ffc65d'" onmouseout="this.style.color='white'">TOPMODS</a>
+
+
         <a href="#contact" style="color: white; text-decoration: none; font-weight: bold; transition: 0.3s;" onmouseover="this.style.color='#ffc65d'" onmouseout="this.style.color='white'">CONTACT</a>
+    </div>
+
 </div>
-</div>
- 
- 
-<div style="background-color: #444444; border: 2px solid; #ffc65d;border-radius: 15px;color: #444444; padding: 30px; text-align: center; font-family: sans-serif;"></div>
- 
+
+
+
 <div style="width: 100%; max-width: 940px; margin: 30px auto; padding: 0 10px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-<a href="https://discord.gg/VQNyVwtQPV" target="_blank" style="position: relative; display: block; background: #1a1c20; border: 1px solid #30363d; border-radius: 12px; padding: 20px; text-decoration: none; overflow: hidden; transition: 0.3s; border-left: 4px solid #0084ff;">
-<div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; position: relative; z-index: 2;">
-<div style="display: flex; align-items: center; gap: 15px;">
-<div style="background: #0084ff; color: white; font-size: 10px; font-weight: 900; padding: 4px 8px; border-radius: 4px; letter-spacing: 1px; text-transform: uppercase;">
+    
+    <a href="https://discord.gg/VQNyVwtQPV" target="_blank" style="position: relative; display: block; background: #1a1c20; border: 1px solid #30363d; border-radius: 12px; padding: 20px; text-decoration: none; overflow: hidden; transition: 0.3s; border-left: 4px solid #0084ff;">
+        
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; position: relative; z-index: 2;">
+            
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div style="background: #0084ff; color: white; font-size: 10px; font-weight: 900; padding: 4px 8px; border-radius: 4px; letter-spacing: 1px; text-transform: uppercase;">
                     Annonce
-</div>
-<div>
-<div style="color: #ffffff; font-weight: bold; font-size: 1.1em; margin-bottom: 2px;">REJOINS LE DISCORD AGRIFARM</div>
-<div style="color: #9da5af; font-size: 0.85em;">AgriFarm, Ensemlble partageons la passion agricole !</div>
-</div>
-</div>
+                </div>
+                <div>
+                    <div style="color: #ffffff; font-weight: bold; font-size: 1.1em; margin-bottom: 2px;">REJOINS LE DISCORD AGRIFARM</div>
+                    <div style="color: #9da5af; font-size: 0.85em;">AgriFarm, Ensemlble partageons la passion agricole !</div>
+                </div>
+            </div>
+
             <div style="background: rgba(0, 132, 255, 0.1); color: #0084ff; padding: 10px 22px; border-radius: 8px; font-weight: bold; font-size: 0.9em; border: 1px solid rgba(0, 132, 255, 0.3); white-space: nowrap;">
                 REJOINDRE ➔
-</div>
-</div>
+            </div>
+        </div>
+
         </a>
 </div>
- 
- 
- 
-<div class="section-mods-unique">
-<div class="timer-glass-container">
-<div class="timer-header">
-<span class="pulse-icon">●</span> FIN DES VOTES
-</div>
-<div id="countdown-display">
-<div class="time-block"><span id="days">00</span><small>Jours</small></div>
-<div class="time-separator">:</div>
-<div class="time-block"><span id="hours">00</span><small>Heures</small></div>
-<div class="time-separator">:</div>
-<div class="time-block"><span id="minutes">00</span><small>Min</small></div>
-<div class="time-separator">:</div>
-<div class="time-block"><span id="seconds">00</span><small>Sec</small></div>
-</div>
-</div>
- 
- 
- 
-<div style="text-align: center; margin: 40px 0; font-family: 'Segoe UI', sans-serif;">
-<h3 style="color: #0084ff; font-size: 1.5em; text-transform: uppercase; letter-spacing: 2px; margin: 0;">
-        Cette semaine
-</h3>
-<div style="width: 50px; height: 3px; background: #0084ff; margin: 10px auto; border-radius: 2px;"></div>
-</div>
- 
-<div class="mods-container-simple">
-<div class="mod-card-simple">
-<div class="mod-banner-simple">
-<img src="massey1.jpg" alt="Case" class="mod-img">
-<div class="banner-overlay"></div>
-</div>
-<div class="mod-info-simple">
-<span class="mod-tag-simple">Tracteurs</span>
-<h2 class="mod-h2">Massey</h2>
-<p class="mod-p">Massey Ferguson 7700</p>
-<a href="https://www.kingmods.net/en/fs25/mods/68668/massey-ferguson-7700" style="display: block; text-align: center; background: rgba(255, 255, 255, 0.05); color: #9da5af; text-decoration: none; font-size: 0.75em; font-weight: bold; padding: 8px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #30363d;">VOIR LE MOD</a>
-<div class="vote-container-simple">
-<div class="vote-count-wrapper">
-<span class="vote-label-simple">Votes</span>
-<span class="vote-number-simple" id="nb-1">0</span>
-</div>
-<button class="vote-btn-simple" onclick="voterMod(1, 'Massey')">▲ VOTER</button>
-</div>
-</div>
-</div>
- 
-    <div class="mod-card-simple">
-<div class="mod-banner-simple">
-<img src="fendt1.jpg" alt="Massey" class="mod-img">
-<div class="banner-overlay"></div>
-</div>
-<div class="mod-info-simple">
-<span class="mod-tag-simple">Tracteurs</span>
-<h2 class="mod-h2">Fendt</h2>
-<p class="mod-p">Fendt 700 Vario Gen6</p>
-<a href="https://www.kingmods.net/en/fs25/mods/60037/fendt-700-vario-gen67" style="display: block; text-align: center; background: rgba(255, 255, 255, 0.05); color: #9da5af; text-decoration: none; font-size: 0.75em; font-weight: bold; padding: 8px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #30363d;">VOIR LE MOD</a>
-<div class="vote-container-simple">
-<div class="vote-count-wrapper">
-<span class="vote-label-simple">Votes</span>
-<span class="vote-number-simple" id="nb-2">0</span>
-</div>
-<button class="vote-btn-simple" onclick="voterMod(2, 'Fendt')">▲ VOTER</button>
-</div>
-</div>
-</div>
- 
-    <div class="mod-card-simple">
-<div class="mod-banner-simple">
-<img src="john.jpg" alt="New Holland" class="mod-img">
-<div class="banner-overlay"></div>
-</div>
-<div class="mod-info-simple">
-<span class="mod-tag-simple">Tracteurs</span>
-<h2 class="mod-h2">John Deere</h2>
-<p class="mod-p">John Deere 6R 110-150 Edit</p>
-<a href="https://www.kingmods.net/en/fs25/mods/75819/john-deere-6r-110-150-edit" style="display: block; text-align: center; background: rgba(255, 255, 255, 0.05); color: #9da5af; text-decoration: none; font-size: 0.75em; font-weight: bold; padding: 8px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #30363d;">VOIR LE MOD</a>
-<div class="vote-container-simple">
-<div class="vote-count-wrapper">
-<span class="vote-label-simple">Votes</span>
-<span class="vote-number-simple" id="nb-3">0</span>
-</div>
-<button class="vote-btn-simple" onclick="voterMod(3, 'John Deere')">▲ VOTER</button>
-</div>
-</div>
-</div>
- 
-    <div class="mod-card-simple">
-<div class="mod-banner-simple">
-<img src="case1.jpg" alt="Mod 4" class="mod-img">
-<div class="banner-overlay"></div>
-</div>
-<div class="mod-info-simple">
-<span class="mod-tag-simple">Tracteurs</span>
-<h2 class="mod-h2">Case</h2>
-<p class="mod-p">Case IH Magnum 2007/8 Series</p>
-<a href="https://www.kingmods.net/en/fs25/mods/63621/case-ih-magnum-20078-series" style="display: block; text-align: center; background: rgba(255, 255, 255, 0.05); color: #9da5af; text-decoration: none; font-size: 0.75em; font-weight: bold; padding: 8px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #30363d;">VOIR LE MOD</a>
-<div class="vote-container-simple">
-<div class="vote-count-wrapper">
-<span class="vote-label-simple">Votes</span>
-<span class="vote-number-simple" id="nb-4">0</span>
-</div>
-<button class="vote-btn-simple" onclick="voterMod(4, 'Case')">▲ VOTER</button>
-</div>
-</div>
-</div>
- 
-    <div class="mod-card-simple">
-<div class="mod-banner-simple">
-<img src="fiat.jpg" alt="Mod 5" class="mod-img">
-<div class="banner-overlay"></div>
-</div>
-<div class="mod-info-simple">
-<span class="mod-tag-simple">Tracteurs</span>
-<h2 class="mod-h2">Fiat</h2>
-<p class="mod-p">Fiatagri F140-DT</p>
-<a href="https://www.kingmods.net/en/fs25/mods/75798/fiatagri-f140-dt" style="display: block; text-align: center; background: rgba(255, 255, 255, 0.05); color: #9da5af; text-decoration: none; font-size: 0.75em; font-weight: bold; padding: 8px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #30363d;">VOIR LE MOD</a>
-<div class="vote-container-simple">
-<div class="vote-count-wrapper">
-<span class="vote-label-simple">Votes</span>
-<span class="vote-number-simple" id="nb-5">0</span>
-</div>
-<button class="vote-btn-simple" onclick="voterMod(5, 'Fiat')">▲ VOTER</button>
-</div>
-</div>
-</div>
-</div>
- 
-<div id="global-msg-simple" style="text-align: center;">⚠️ Vous avez déjà utilisé votre vote aujourd'hui ! Revenez demain.</div>
- 
-<style>
-    .section-mods-unique { display: flex; flex-direction: column; align-items: center; padding: 40px 20px; font-family: 'Segoe UI', sans-serif; }
-    .timer-glass-container { background: rgba(26, 28, 32, 0.9); border: 2px solid #30363d; border-bottom: 3px solid #0084ff; padding: 20px 40px; border-radius: 15px; margin-bottom: 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); text-align: center; }
-    .timer-header { color: #9da5af; font-size: 0.75em; font-weight: 900; letter-spacing: 3px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; }
-    .pulse-icon { color: #0084ff; animation: pulse 1.5s infinite; }
-    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
-    #countdown-display { display: flex; align-items: center; gap: 15px; }
-    .time-block { display: flex; flex-direction: column; align-items: center; min-width: 60px; }
-    .time-block span { font-size: 2em; font-weight: bold; color: #fff; font-family: monospace; }
-    .time-block small { font-size: 0.6em; color: #0084ff; text-transform: uppercase; font-weight: bold; }
-    .time-separator { font-size: 1.5em; color: #30363d; padding-bottom: 15px; }
-    .mods-container-simple { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
-    .mod-card-simple { background-color: #1a1c20; width: 300px; border-radius: 12px; overflow: hidden; border: 1px solid #30363d; color: white; box-shadow: 0 10px 20px rgba(0,0,0,0.3); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.3s ease; }
-    .mod-card-simple:hover { transform: translateY(-8px); border-color: #0084ff; }
-    .mod-banner-simple { width: 100%; height: 120px; position: relative; overflow: hidden; }
-    .mod-img { width: 100%; height: 100%; object-fit: cover; }
-    .banner-overlay { position: absolute; top: 0; left: 0; background: rgba(0, 0, 0, 0.4); width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 1.1em; text-transform: uppercase; color: white; pointer-events: none; }
-    .mod-info-simple { padding: 15px; }
-    .mod-tag-simple { background: rgba(0, 132, 255, 0.1); color: #0084ff; padding: 4px 8px; border-radius: 4px; font-size: 0.7em; font-weight: bold; }
-    .mod-h2 { margin: 10px 0 5px 0; font-size: 1.2em; color: white; }
-    .mod-p { color: #9da5af; font-size: 0.85em; margin-bottom: 15px; min-height: 40px; }
-    .vote-container-simple { display: flex; align-items: center; justify-content: space-between; background: #111316; padding: 10px; border-radius: 8px; }
-    .vote-number-simple { font-size: 1.3em; font-weight: bold; color: white; }
-    .vote-btn-simple { background-color: #0084ff; color: white; border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; }
-    .vote-btn-simple:hover:not(:disabled) { background-color: #0066cc; box-shadow: 0 0 12px rgba(0, 132, 255, 0.5); }
-    .vote-btn-simple:disabled { background-color: #333; color: #777; cursor: not-allowed; }
-    #global-msg-simple { margin-top: 20px; color: #ff4444; background: rgba(255,68,68,0.1); padding: 10px 20px; border-radius: 20px; border: 1px solid rgba(255,68,68,0.3); display: none; font-weight: bold; animation: fadeIn 0.5s ease; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-</style>
- 
-<script>
-    (function() {
-        const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1481921172051591229/NTcMJr3YmRD-klIRmikDY3-H5sRKk91Wdf_p7M9e4jPxsXsHPDsaXQXSjGBKqN9g5l1-";
- 
-        function getNextSaturdayNoon() {
-            let now = new Date();
-            let nextSat = new Date();
-            let dayDiff = (6 - now.getDay() + 7) % 7;
-            if (dayDiff === 0 && now.getHours() >= 12) dayDiff = 7;
-            if (dayDiff === 0 && now.getHours() < 12) dayDiff = 0;
-            
-            nextSat.setDate(now.getDate() + dayDiff);
-            nextSat.setHours(12, 0, 0, 0);
-            return nextSat.getTime();
-        }
 
-        let endTime = localStorage.getItem('vote_end_date_v4');
-        if (!endTime || new Date().getTime() > endTime) {
-            endTime = getNextSaturdayNoon();
-            localStorage.setItem('vote_end_date_v4', endTime);
+
+
+
+
+<div class="section-mods-unique">
+    <div style="text-align: center; margin-bottom: 10px;">
+        <h2 style="color: white; font-family: 'Segoe UI', sans-serif; font-size: 1.2em; text-transform: uppercase; letter-spacing: 2px; font-weight: bold;">
+            Fin des votes dans :
+        </h2>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+    <style>
+        .timer-minimal {
+            display: flex; gap: 15px; justify-content: center; align-items: center;
+            font-family: 'Segoe UI', sans-serif; color: white; margin: 20px auto;
         }
- 
-        const dateId = new Date().toDateString();
-        let isExpired = false;
- 
-        function updateTimer() {
-            const now = new Date().getTime();
-            const distance = endTime - now;
-            if (distance < 0) {
-                const countdownElem = document.getElementById("countdown-display");
-                if (countdownElem) countdownElem.innerHTML = "<span style='color:#ff4444; font-size:1.5em;'>SESSION TERMINÉE</span>";
-                isExpired = true;
-                disableAll(true);
-                return;
-            }
-            const d = document.getElementById("days"), h = document.getElementById("hours"), m = document.getElementById("minutes"), s = document.getElementById("seconds");
-            if(d) d.innerText = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
-            if(h) h.innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
-            if(m) m.innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
-            if(s) s.innerText = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
+        .time-unit { display: flex; flex-direction: column; align-items: center; }
+        .digit-group { display: flex; gap: 2px; }
+        .slot {
+            height: 2.5rem; width: 1.6rem; overflow: hidden; position: relative;
+            background: rgba(255, 255, 255, 0.05); border-radius: 4px;
         }
- 
-        setInterval(updateTimer, 1000);
-        updateTimer();
- 
-        function checkVotes() {
-            for (let i = 1; i <= 5; i++) {
-                const val = localStorage.getItem('score_m_v3_' + i) || 0;
-                const scoreElem = document.getElementById('nb-' + i);
-                if (scoreElem) scoreElem.innerText = val;
-            }
-            if (localStorage.getItem('global_vote_v3') === dateId || isExpired) {
-                disableAll(isExpired);
-            }
+        .slot-inner { display: flex; flex-direction: column; transition: none; }
+        .roll-up { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); transform: translateY(-2.5rem); }
+        .slot span {
+            display: block; height: 2.5rem; width: 1.6rem; font-size: 2.5rem;
+            font-weight: 900; line-height: 2.5rem; text-align: center;
+            text-shadow: 0 0 10px rgba(0, 132, 255, 0.5); font-family: 'Segoe UI', sans-serif;
         }
- 
-        window.voterMod = function(id, modName) {
-            if (isExpired) return;
-            if (localStorage.getItem('global_vote_v3') === dateId) return;
- 
-            let s = parseInt(localStorage.getItem('score_m_v3_' + id)) || 0;
-            s++;
-            localStorage.setItem('score_m_v3_' + id, s);
-            localStorage.setItem('global_vote_v3', dateId);
-            const scoreElem = document.getElementById('nb-' + id);
-            if (scoreElem) scoreElem.innerText = s;
- 
-            fetch(DISCORD_WEBHOOK_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    content: `🗳️ **Nouveau vote !**\nLe mod **${modName}** vient de recevoir un vote.\nScore actuel (local) : ${s}`
-                })
-            }).catch(err => console.error("Erreur Webhook Discord:", err));
- 
-            disableAll(false);
-        };
- 
-        function disableAll(finished) {
-            document.querySelectorAll('.vote-btn-simple').forEach(b => {
-                b.disabled = true;
-                b.innerText = finished ? "CLOS" : "DÉJÀ VOTÉ";
+        .time-unit small {
+            font-size: 0.65rem; color: #0084ff; text-transform: uppercase;
+            letter-spacing: 1px; font-weight: bold; margin-top: 5px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .separator { font-size: 1.5rem; color: rgba(255, 255, 255, 0.3); margin-bottom: 20px; }
+
+        .mods-container-simple { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; font-family: 'Segoe UI', sans-serif; }
+        .mod-card-simple { background-color: #1a1c20; width: 300px; border-radius: 12px; overflow: hidden; border: 1px solid #30363d; color: white; box-shadow: 0 10px 20px rgba(0,0,0,0.3); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.3s ease; }
+        .mod-card-simple:hover { transform: translateY(-8px); border-color: #0084ff; }
+        .mod-banner-simple { width: 100%; height: 120px; position: relative; overflow: hidden; }
+        .mod-img { width: 100%; height: 100%; object-fit: cover; }
+        .mod-info-simple { padding: 15px; }
+        .mod-tag-simple { background: rgba(0, 132, 255, 0.1); color: #0084ff; padding: 4px 8px; border-radius: 4px; font-size: 0.7em; font-weight: bold; }
+        .mod-h2 { margin: 10px 0 5px 0; font-size: 1.2em; color: white; }
+        .mod-p { color: #9da5af; font-size: 0.85em; margin-bottom: 15px; min-height: 40px; }
+        .vote-container-simple { display: flex; align-items: center; justify-content: space-between; background: #111316; padding: 10px; border-radius: 8px; }
+        .vote-number-simple { font-size: 1.3em; font-weight: bold; color: white; }
+        .vote-btn-simple { background-color: #0084ff; color: white; border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; font-family: 'Segoe UI', sans-serif; }
+        .vote-btn-simple:hover:not(:disabled) { background-color: #0066cc; box-shadow: 0 0 12px rgba(0, 132, 255, 0.5); }
+        .vote-btn-simple:disabled { background-color: #333; color: #777; cursor: not-allowed; }
+
+        #global-msg-simple { 
+            margin: 20px auto; max-width: 350px; color: #ff4444; background: rgba(255,68,68,0.1); 
+            padding: 10px 15px; border-radius: 10px; border: 1px solid rgba(255,68,68,0.3); 
+            display: none; font-weight: bold; text-align: center; font-family: 'Segoe UI', sans-serif;
+            font-size: 0.85em; animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+
+    <div class="timer-minimal" id="timer-wrapper">
+        <div class="time-unit"><div class="digit-group"><div class="slot"><div class="slot-inner" id="inner-d1"><span id="d1">0</span><span id="next-d1">0</span></div></div><div class="slot"><div class="slot-inner" id="inner-d2"><span id="d2">0</span><span id="next-d2">0</span></div></div></div><small>Jours</small></div>
+        <div class="separator">:</div>
+        <div class="time-unit"><div class="digit-group"><div class="slot"><div class="slot-inner" id="inner-h1"><span id="h1">0</span><span id="next-h1">0</span></div></div><div class="slot"><div class="slot-inner" id="inner-h2"><span id="h2">0</span><span id="next-h2">0</span></div></div></div><small>Heures</small></div>
+        <div class="separator">:</div>
+        <div class="time-unit"><div class="digit-group"><div class="slot"><div class="slot-inner" id="inner-m1"><span id="m1">0</span><span id="next-m1">0</span></div></div><div class="slot"><div class="slot-inner" id="inner-m2"><span id="m2">0</span><span id="next-m2">0</span></div></div></div><small>Min</small></div>
+        <div class="separator">:</div>
+        <div class="time-unit"><div class="digit-group"><div class="slot"><div class="slot-inner" id="inner-s1"><span id="s1">0</span><span id="next-s1">0</span></div></div><div class="slot"><div class="slot-inner" id="inner-s2"><span id="s2">0</span><span id="next-s2">0</span></div></div></div><small>Sec</small></div>
+    </div>
+
+    <div style="width: 100%; max-width: 1200px; text-align: left; margin: 20px 0; padding-left: 150px;">
+        <h3 style="color: #0084ff; font-family: 'Segoe UI', sans-serif; font-size: 1.5em; text-transform: uppercase; letter-spacing: 2px; margin: 0;">Cette semaine</h3>
+        <div style="width: 50px; height: 3px; background: #0084ff; margin-top: 10px; border-radius: 2px;"></div>
+    </div>
+
+    <div class="mods-container-simple">
+        <div class="mod-card-simple">
+            <div class="mod-banner-simple"><img src="massey1.jpg" class="mod-img"></div>
+            <div class="mod-info-simple">
+                <span class="mod-tag-simple">Tracteurs</span>
+                <h2 class="mod-h2">Massey</h2>
+                <p class="mod-p">Massey Ferguson 7700</p>
+                <a href="https://www.kingmods.net/en/fs25/mods/68668/massey-ferguson-7700" style="display: block; text-align: center; background: rgba(255, 255, 255, 0.05); color: #9da5af; text-decoration: none; font-size: 0.75em; font-weight: bold; padding: 8px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #30363d;">VOIR LE MOD</a>
+                <div class="vote-container-simple">
+                    <span class="vote-number-simple" id="nb-1">0</span>
+                    <button class="vote-btn-simple" onclick="voterMod(1, 'Case')">▲ VOTER</button>
+                </div>
+            </div>
+        </div>
+        <div class="mod-card-simple">
+            <div class="mod-banner-simple"><img src="fendt1.jpg" class="mod-img"></div>
+            <div class="mod-info-simple">
+                <span class="mod-tag-simple">Tracteurs</span>
+                <h2 class="mod-h2">Fendt</h2>
+                <p class="mod-p">Fendt 700 Vario Gen6</p>
+                <a href="https://www.kingmods.net/en/fs25/mods/60037/fendt-700-vario-gen67" style="display: block; text-align: center; background: rgba(255, 255, 255, 0.05); color: #9da5af; text-decoration: none; font-size: 0.75em; font-weight: bold; padding: 8px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #30363d;">VOIR LE MOD</a>
+                <div class="vote-container-simple">
+                    <span class="vote-number-simple" id="nb-2">0</span>
+                    <button class="vote-btn-simple" onclick="voterMod(2, 'Massey')">▲ VOTER</button>
+                </div>
+            </div>
+        </div>
+        <div class="mod-card-simple">
+            <div class="mod-banner-simple"><img src="john.jpg" class="mod-img"></div>
+            <div class="mod-info-simple">
+                <span class="mod-tag-simple">Tracteurs</span>
+                <h2 class="mod-h2">John Deere</h2>
+                <p class="mod-p">John Deere 6R 110-150 Edit</p>
+                <a href="https://www.kingmods.net/en/fs25/mods/75819/john-deere-6r-110-150-edit" style="display: block; text-align: center; background: rgba(255, 255, 255, 0.05); color: #9da5af; text-decoration: none; font-size: 0.75em; font-weight: bold; padding: 8px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #30363d;">VOIR LE MOD</a>
+                <div class="vote-container-simple">
+                    <span class="vote-number-simple" id="nb-3">0</span>
+                    <button class="vote-btn-simple" onclick="voterMod(3, 'New Holland')">▲ VOTER</button>
+                </div>
+            </div>
+        </div>
+        <div class="mod-card-simple">
+            <div class="mod-banner-simple"><img src="case1.jpg" class="mod-img"></div>
+            <div class="mod-info-simple">
+                <span class="mod-tag-simple">Tracteurs</span>
+                <h2 class="mod-h2">Case</h2>
+                <p class="mod-p">Case IH Magnum 2007/8 Series</p>
+                <a href="https://www.kingmods.net/en/fs25/mods/63621/case-ih-magnum-20078-series" style="display: block; text-align: center; background: rgba(255, 255, 255, 0.05); color: #9da5af; text-decoration: none; font-size: 0.75em; font-weight: bold; padding: 8px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #30363d;">VOIR LE MOD</a>
+                <div class="vote-container-simple">
+                    <span class="vote-number-simple" id="nb-4">0</span>
+                    <button class="vote-btn-simple" onclick="voterMod(4, 'Mod 4')">▲ VOTER</button>
+                </div>
+            </div>
+        </div>
+        <div class="mod-card-simple">
+            <div class="mod-banner-simple"><img src="fiat.jpg" class="mod-img"></div>
+            <div class="mod-info-simple">
+                <span class="mod-tag-simple">Tracteurs</span>
+                <h2 class="mod-h2">Fiat</h2>
+                <p class="mod-p">Fiatagri F140-DT</p>
+                <a href="https://www.kingmods.net/en/fs25/mods/75798/fiatagri-f140-dt" style="display: block; text-align: center; background: rgba(255, 255, 255, 0.05); color: #9da5af; text-decoration: none; font-size: 0.75em; font-weight: bold; padding: 8px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #30363d;">VOIR LE MOD</a>
+                <div class="vote-container-simple">
+                    <span class="vote-number-simple" id="nb-5">0</span>
+                    <button class="vote-btn-simple" onclick="voterMod(5, 'Mod 5')">▲ VOTER</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="global-msg-simple">⚠️ Tu as déjà voté, reviens demain !</div>
+
+    <p style="color: #9da5af; font-size: 0.9em; margin-top: 25px; font-weight: 500; letter-spacing: 0.5px; text-align: center; font-family: 'Segoe UI', sans-serif;">
+        Le nombre de votes public sera annoncé à la fin des votes
+    </p>
+
+    <script>
+        (function() {
+            const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1481921172051591229/NTcMJr3YmRD-klIRmikDY3-H5sRKk91Wdf_p7M9e4jPxsXsHPDsaXQXSjGBKqN9g5l1-"; 
+            const firebaseConfig = {
+                apiKey: "AIzaSyB_xwK8gHnss43r5Y2qS6kxnYfq5lY0xcE", 
+                authDomain: "agrifarm-67c1f.firebaseapp.com",
+                databaseURL: "https://agrifarm-67c1f-default-rtdb.europe-west1.firebasedatabase.app/",
+                projectId: "agrifarm-67c1f",
+                storageBucket: "agrifarm-67c1f.appspot.com"
+            };
+
+            if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+            const db = firebase.database();
+            let isExpired = false;
+
+            function getNextSaturday12pm() {
+                let d = new Date();
+                d.setDate(d.getDate() + (6 - d.getDay() + 7) % 7);
+                d.setHours(12, 0, 0, 0);
+                if (new Date() > d) d.setDate(d.getDate() + 7);
+                return d.getTime();
+            }
+
+            let targetTime = getNextSaturday12pm();
+            const timerRef = db.ref('config/date_fin_votes');
+
+            timerRef.on('value', (snap) => {
+                let fireTime = snap.val();
+                if (fireTime && fireTime > Date.now()) {
+                    targetTime = fireTime;
+                } else {
+                    targetTime = getNextSaturday12pm();
+                    timerRef.set(targetTime);
+                }
+                checkVoteStatus();
             });
-            const msgElem = document.getElementById('global-msg-simple');
-            if (!finished && localStorage.getItem('global_vote_v3') === dateId && msgElem) {
-                msgElem.style.display = "block";
+
+            function rollDigit(id, newValue) {
+                const currentSpan = document.getElementById(id);
+                const nextSpan = document.getElementById('next-' + id);
+                const innerDiv = document.getElementById('inner-' + id);
+                if (!currentSpan || currentSpan.innerText === newValue) return;
+                nextSpan.innerText = newValue;
+                innerDiv.classList.add('roll-up');
+                setTimeout(() => {
+                    currentSpan.innerText = newValue;
+                    innerDiv.classList.remove('roll-up');
+                }, 400);
             }
-        }
- 
-        checkVotes();
-    })();
-</script>
-<p style="color: #9da5af; font-size: 0.9em; margin-bottom: 25px; font-weight: 500; letter-spacing: 0.5px; text-align: center; width: 100%; font-family: 'Segoe UI', sans-serif;">
-    Le nombres de vote public sera annoncé à la fin des votes
-</p>
- 
- 
- 
- 
+
+            function update() {
+                const now = Date.now();
+                const diff = targetTime - now;
+                if (diff <= 0) {
+                    document.getElementById('timer-wrapper').innerHTML = "<span style='color:#ff4444; font-weight:900; font-size:1.5rem; font-family: Segoe UI, sans-serif;'>SESSION TERMINÉE</span>";
+                    isExpired = true;
+                    disableAll(true);
+                    return;
+                }
+                const d = String(Math.floor(diff / 86400000)).padStart(2, '0');
+                const h = String(Math.floor((diff % 86400000) / 3600000)).padStart(2, '0');
+                const m = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
+                const s = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
+                rollDigit('d1', d[0]); rollDigit('d2', d[1]);
+                rollDigit('h1', h[0]); rollDigit('h2', h[1]);
+                rollDigit('m1', m[0]); rollDigit('m2', m[1]);
+                rollDigit('s1', s[0]); rollDigit('s2', s[1]);
+            }
+
+            window.voterMod = function(id, modName) {
+                if (isExpired) return;
+
+                const lastVoteDate = localStorage.getItem('last_vote_date');
+                const today = new Date().toLocaleDateString();
+
+                if (lastVoteDate === today) {
+                    document.getElementById('global-msg-simple').style.display = 'block';
+                    return;
+                }
+
+                const modRef = db.ref('votes/mod_' + id);
+                modRef.transaction((currentValue) => {
+                    return (currentValue || 0) + 1;
+                }, (error, committed, snapshot) => {
+                    if (committed) {
+                        localStorage.setItem('last_vote_date', today);
+                        disableAll(false);
+                        const newScore = snapshot.val();
+                        fetch(DISCORD_WEBHOOK_URL, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                content: `🗳️ **Nouveau vote !**\nLe mod **${modName}** a reçu un vote.\nScore total en ligne : **${newScore}**`
+                            })
+                        }).catch(err => console.error(err));
+                    }
+                });
+            };
+
+            function syncScores() {
+                for (let i = 1; i <= 5; i++) {
+                    db.ref('votes/mod_' + i).on('value', (snap) => {
+                        const val = snap.val() || 0;
+                        const scoreElem = document.getElementById('nb-' + i);
+                        if (scoreElem) scoreElem.innerText = val;
+                    });
+                }
+            }
+
+            function disableAll(finished) {
+                document.querySelectorAll('.vote-btn-simple').forEach(b => {
+                    b.disabled = true;
+                    b.innerText = finished ? "CLOS" : "VOTÉ";
+                });
+                if (!finished) document.getElementById('global-msg-simple').style.display = 'block';
+            }
+
+            function checkVoteStatus() {
+                const lastVoteDate = localStorage.getItem('last_vote_date');
+                const today = new Date().toLocaleDateString();
+                if (lastVoteDate === today) {
+                    disableAll(false);
+                }
+            }
+
+            setInterval(update, 1000);
+            update();
+            syncScores();
+        })();
+    </script>
+</div>
+
+
+
 <div style="text-align: center; margin: 40px 0; font-family: 'Segoe UI', sans-serif;">
-<h3 style="color: #0084ff; font-size: 1.5em; text-transform: uppercase; letter-spacing: 2px; margin: 0;">
+    <h3 style="color: #0084ff; font-size: 1.5em; text-transform: uppercase; letter-spacing: 2px; margin: 0;">
         La semaine prochaine
- 
+
     </h3>
-<div style="width: 50px; height: 3px; background: #0084ff; margin: 10px auto; border-radius: 2px;"></div>
+    <div style="width: 50px; height: 3px; background: #0084ff; margin: 10px auto; border-radius: 2px;"></div>
 </div>
- 
- 
- 
+
+
+
+
 <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; width: 100%; margin: 20px auto; font-family: sans-serif !important;">
- 
+
     <div class="mod-card-simple" style="border: 1px dashed #30363d !important; flex: 0 0 300px; font-family: sans-serif !important;">
-<div class="mod-banner-simple">
-<img src="fendt.jpg" class="mod-img" style="filter: blur(10px) grayscale(1); opacity: 0.4;">
-<div class="banner-overlay" style="font-family: sans-serif !important;">🔒 PROCHAINEMENT</div>
-</div>
-<div class="mod-info-simple">
-<span class="mod-tag-simple" style="opacity: 0.5; font-family: sans-serif !important;">Tracteurs</span>
-<h2 class="mod-h2" style="color:#444 !important; font-family: sans-serif !important;">Fendt</h2>
-<p class="mod-p" style="color:#333 !important; font-family: sans-serif !important;">Fendt 1000 Vario Series</p>
-<div class="vote-container-simple" style="opacity:0.5;">
-<button class="vote-btn-simple" disabled style="width:100%; font-family: sans-serif !important;">BLOQUÉ</button>
-</div>
-</div>
-</div>
- 
+        <div class="mod-banner-simple">
+            <img src="fendt.jpg" class="mod-img" style="filter: blur(10px) grayscale(1); opacity: 0.4;">
+            <div class="banner-overlay" style="font-family: sans-serif !important;">🔒 PROCHAINEMENT</div>
+        </div>
+        <div class="mod-info-simple">
+            <span class="mod-tag-simple" style="opacity: 0.5; font-family: sans-serif !important;">Tracteurs</span>
+            <h2 class="mod-h2" style="color:#444 !important; font-family: sans-serif !important;">Fendt</h2>
+            <p class="mod-p" style="color:#333 !important; font-family: sans-serif !important;">Fendt 1000 Vario Series</p>
+            <div class="vote-container-simple" style="opacity:0.5;">
+                <button class="vote-btn-simple" disabled style="width:100%; font-family: sans-serif !important;">BLOQUÉ</button>
+            </div>
+        </div>
+    </div>
+
     <div class="mod-card-simple" style="border: 1px dashed #30363d !important; flex: 0 0 300px; font-family: sans-serif !important;">
-<div class="mod-banner-simple">
-<img src="https://via.placeholder.com/300x120/1a1c20/30363d" class="mod-img" style="filter: blur(10px) grayscale(1); opacity: 0.4;">
-<div class="banner-overlay" style="font-family: sans-serif !important;">🔒 PROCHAINEMENT</div>
-</div>
-<div class="mod-info-simple">
-<span class="mod-tag-simple" style="opacity: 0.5; font-family: sans-serif !important;">Mystère</span>
-<h2 class="mod-h2" style="color:#444 !important; font-family: sans-serif !important;">Contenu Verrouillé</h2>
-<p class="mod-p" style="color:#333 !important; font-family: sans-serif !important;">Un nouvel ajout secret arrive.</p>
-<div class="vote-container-simple" style="opacity:0.5;">
-<button class="vote-btn-simple" disabled style="width:100%; font-family: sans-serif !important;">BLOQUÉ</button>
-</div>
-</div>
-</div>
- 
- 
+        <div class="mod-banner-simple">
+            <img src="https://via.placeholder.com/300x120/1a1c20/30363d" class="mod-img" style="filter: blur(10px) grayscale(1); opacity: 0.4;">
+            <div class="banner-overlay" style="font-family: sans-serif !important;">🔒 PROCHAINEMENT</div>
+        </div>
+        <div class="mod-info-simple">
+            <span class="mod-tag-simple" style="opacity: 0.5; font-family: sans-serif !important;">Mystère</span>
+            <h2 class="mod-h2" style="color:#444 !important; font-family: sans-serif !important;">Contenu Verrouillé</h2>
+            <p class="mod-p" style="color:#333 !important; font-family: sans-serif !important;">Un nouvel ajout secret arrive.</p>
+            <div class="vote-container-simple" style="opacity:0.5;">
+                <button class="vote-btn-simple" disabled style="width:100%; font-family: sans-serif !important;">BLOQUÉ</button>
+            </div>
+        </div>
+    </div>
+
+
   <div class="mod-card-simple" style="border: 1px dashed #30363d !important; flex: 0 0 300px; font-family: sans-serif !important;">
-<div class="mod-banner-simple">
-<img src="https://via.placeholder.com/300x120/1a1c20/30363d" class="mod-img" style="filter: blur(10px) grayscale(1); opacity: 0.4;">
-<div class="banner-overlay" style="font-family: sans-serif !important;">🔒 PROCHAINEMENT</div>
-</div>
-<div class="mod-info-simple">
-<span class="mod-tag-simple" style="opacity: 0.5; font-family: sans-serif !important;">Mystère</span>
-<h2 class="mod-h2" style="color:#444 !important; font-family: sans-serif !important;">Contenu Verrouillé</h2>
-<p class="mod-p" style="color:#333 !important; font-family: sans-serif !important;">Un nouvel ajout secret arrive.</p>
-<div class="vote-container-simple" style="opacity:0.5;">
-<button class="vote-btn-simple" disabled style="width:100%; font-family: sans-serif !important;">BLOQUÉ</button>
-</div>
-</div>
-</div>
- 
+        <div class="mod-banner-simple">
+            <img src="https://via.placeholder.com/300x120/1a1c20/30363d" class="mod-img" style="filter: blur(10px) grayscale(1); opacity: 0.4;">
+            <div class="banner-overlay" style="font-family: sans-serif !important;">🔒 PROCHAINEMENT</div>
+        </div>
+        <div class="mod-info-simple">
+            <span class="mod-tag-simple" style="opacity: 0.5; font-family: sans-serif !important;">Mystère</span>
+            <h2 class="mod-h2" style="color:#444 !important; font-family: sans-serif !important;">Contenu Verrouillé</h2>
+            <p class="mod-p" style="color:#333 !important; font-family: sans-serif !important;">Un nouvel ajout secret arrive.</p>
+            <div class="vote-container-simple" style="opacity:0.5;">
+                <button class="vote-btn-simple" disabled style="width:100%; font-family: sans-serif !important;">BLOQUÉ</button>
+            </div>
+        </div>
+    </div>
+
   <div class="mod-card-simple" style="border: 1px dashed #30363d !important; flex: 0 0 300px; font-family: sans-serif !important;">
-<div class="mod-banner-simple">
-<img src="https://via.placeholder.com/300x120/1a1c20/30363d" class="mod-img" style="filter: blur(10px) grayscale(1); opacity: 0.4;">
-<div class="banner-overlay" style="font-family: sans-serif !important;">🔒 PROCHAINEMENT</div>
-</div>
-<div class="mod-info-simple">
-<span class="mod-tag-simple" style="opacity: 0.5; font-family: sans-serif !important;">Mystère</span>
-<h2 class="mod-h2" style="color:#444 !important; font-family: sans-serif !important;">Contenu Verrouillé</h2>
-<p class="mod-p" style="color:#333 !important; font-family: sans-serif !important;">Un nouvel ajout secret arrive.</p>
-<div class="vote-container-simple" style="opacity:0.5;">
-<button class="vote-btn-simple" disabled style="width:100%; font-family: sans-serif !important;">BLOQUÉ</button>
-</div>
-</div>
-</div>
- 
- 
- 
- 
- 
- 
- 
- 
+        <div class="mod-banner-simple">
+            <img src="https://via.placeholder.com/300x120/1a1c20/30363d" class="mod-img" style="filter: blur(10px) grayscale(1); opacity: 0.4;">
+            <div class="banner-overlay" style="font-family: sans-serif !important;">🔒 PROCHAINEMENT</div>
+        </div>
+        <div class="mod-info-simple">
+            <span class="mod-tag-simple" style="opacity: 0.5; font-family: sans-serif !important;">Mystère</span>
+            <h2 class="mod-h2" style="color:#444 !important; font-family: sans-serif !important;">Contenu Verrouillé</h2>
+            <p class="mod-p" style="color:#333 !important; font-family: sans-serif !important;">Un nouvel ajout secret arrive.</p>
+            <div class="vote-container-simple" style="opacity:0.5;">
+                <button class="vote-btn-simple" disabled style="width:100%; font-family: sans-serif !important;">BLOQUÉ</button>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <div class="mod-card-simple" style="border: 1px dashed #30363d !important; flex: 0 0 300px; font-family: sans-serif !important;">
-<div class="mod-banner-simple">
-<img src="https://via.placeholder.com/300x120/1a1c20/30363d" class="mod-img" style="filter: blur(10px) grayscale(1); opacity: 0.4;">
-<div class="banner-overlay" style="font-family: sans-serif !important;">🔒 PROCHAINEMENT</div>
+        <div class="mod-banner-simple">
+            <img src="https://via.placeholder.com/300x120/1a1c20/30363d" class="mod-img" style="filter: blur(10px) grayscale(1); opacity: 0.4;">
+            <div class="banner-overlay" style="font-family: sans-serif !important;">🔒 PROCHAINEMENT</div>
+        </div>
+        <div class="mod-info-simple">
+            <span class="mod-tag-simple" style="opacity: 0.5; font-family: sans-serif !important;">Mystère</span>
+            <h2 class="mod-h2" style="color:#444 !important; font-family: sans-serif !important;">Contenu Verrouillé</h2>
+            <p class="mod-p" style="color:#333 !important; font-family: sans-serif !important;">Préparez-vous pour la surprise.</p>
+            <div class="vote-container-simple" style="opacity:0.5;">
+                <button class="vote-btn-simple" disabled style="width:100%; font-family: sans-serif !important;">BLOQUÉ</button>
+            </div>
+        </div>
+    </div>
+
 </div>
-<div class="mod-info-simple">
-<span class="mod-tag-simple" style="opacity: 0.5; font-family: sans-serif !important;">Mystère</span>
-<h2 class="mod-h2" style="color:#444 !important; font-family: sans-serif !important;">Contenu Verrouillé</h2>
-<p class="mod-p" style="color:#333 !important; font-family: sans-serif !important;">Préparez-vous pour la surprise.</p>
-<div class="vote-container-simple" style="opacity:0.5;">
-<button class="vote-btn-simple" disabled style="width:100%; font-family: sans-serif !important;">BLOQUÉ</button>
-</div>
-</div>
-</div>
- 
-</div>
- 
- 
+
+
 <div style="background-color: #444444; border: 2px solid; #ffc65d;border-radius: 15px;color: #444444; padding: 20px; text-align: center; font-family: sans-serif;"></div>
 <div style="background-color: #444444; border: 2px solid; #ffc65d;border-radius: 15px;color: #444444; padding: 20px; text-align: center; font-family: sans-serif;"></div>
 <div style="background-color: #444444; border: 2px solid; #ffc65d;border-radius: 15px;color: #444444; padding: 20px; text-align: center; font-family: sans-serif;"></div>
- 
- 
+
+
 <div style="position: relative; width: 100%; display: flex; justify-content: center; margin: 50px 0;">
-<div style="width: 70%; height: 1px; background: linear-gradient(90deg, transparent, #30363d, #0084ff, #30363d, transparent);"></div>
-<div style="position: absolute; top: -4px; width: 10px; height: 10px; background: #0084ff; border-radius: 50%; box-shadow: 0 0 15px #0084ff; filter: blur(1px);"></div>
+    <div style="width: 70%; height: 1px; background: linear-gradient(90deg, transparent, #30363d, #0084ff, #30363d, transparent);"></div>
+    
+    <div style="position: absolute; top: -4px; width: 10px; height: 10px; background: #0084ff; border-radius: 50%; box-shadow: 0 0 15px #0084ff; filter: blur(1px);"></div>
 </div>
- 
- 
+
+
+
 <div style="text-align: center; margin: 40px 0; font-family: 'Segoe UI', sans-serif;">
-<h3 style="color: #0084ff; font-size: 1.5em; text-transform: uppercase; letter-spacing: 2px; margin: 0;">
+    <h3 style="color: #0084ff; font-size: 1.5em; text-transform: uppercase; letter-spacing: 2px; margin: 0;">
         🏆 Meilleurs Mods
- 
+
     </h3>
-<div style="width: 50px; height: 3px; background: #0084ff; margin: 10px auto; border-radius: 2px;"></div>
+    <div style="width: 50px; height: 3px; background: #0084ff; margin: 10px auto; border-radius: 2px;"></div>
 </div>
- 
- 
+
+
 <div style="max-width: 940px; margin: 40px auto; padding: 20px; background: linear-gradient(145deg, #1a1c20, #111316); border: 1px solid #30363d; border-radius: 15px; position: relative; overflow: hidden; font-family: 'Segoe UI', sans-serif;">
-<div style="position: absolute; top: 15px; right: 15px; background: #ffca28; color: #000; font-size: 10px; font-weight: 900; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 0 15px rgba(255, 202, 40, 0.3);">
+    
+    <div style="position: absolute; top: 15px; right: 15px; background: #ffca28; color: #000; font-size: 10px; font-weight: 900; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 0 15px rgba(255, 202, 40, 0.3);">
         🏆 Dernier Vainqueur
-</div>
- 
+    </div>
+
     <div style="display: flex; align-items: center; gap: 25px; flex-wrap: wrap;">
-<div style="width: 150px; height: 100px; border-radius: 10px; overflow: hidden; border: 2px solid #30363d;">
-<img src="case.jpg" alt="Gagnant" style="width: 100%; height: 100%; object-fit: cover;">
-</div>
- 
+        
+        <div style="width: 150px; height: 100px; border-radius: 10px; overflow: hidden; border: 2px solid #30363d;">
+            <img src="case.jpg" alt="Gagnant" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+
         <div style="flex: 1; min-width: 250px;">
-<h3 style="color: #ffffff; margin: 0 0 5px 0; font-size: 1.4em;">Case IH JX Series</h3>
-<p style="color: #9da5af; margin: 0; font-size: 0.9em;">
+            <h3 style="color: #ffffff; margin: 0 0 5px 0; font-size: 1.4em;">Case IH JX Series</h3>
+            <p style="color: #9da5af; margin: 0; font-size: 0.9em;">
                 Ce mod a remporté le plus de vote la semaine dernière avec <span style="color: #0084ff; font-weight: bold;">364 votes</span>. 
                 Merci à tous les participants !
-</p>
-</div>
- 
+            </p>
+        </div>
+
         <a href="https://www.kingmods.net/fr/fs25/mods/75687/case-ih-jx-series" style="background: #0084ff; color: white; text-decoration: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; font-size: 0.9em; transition: 0.3s; box-shadow: 0 4px 15px rgba(0, 132, 255, 0.2);">
             TÉLÉCHARGER ➔
-</a>
- 
+        </a>
+
     </div>
 </div>
- 
- 
- 
- 
- 
+
+
+
+
+
+
+
+
+
 <footer style="
         background-color: #2b2b2b; 
         color: #b0b0b0; 
@@ -550,33 +594,35 @@
         font-family: 'Segoe UI', sans-serif;
         box-shadow: 0 -5px 15px rgba(0,0,0,0.3); /* Ombre portée vers le haut */
     ">
-<div style="max-width: 800px; margin: 0 auto;">
-<h3 style="color: #00d4ff; margin-bottom: 15px; letter-spacing: 2px; text-transform: uppercase;">AgriFarm</h3>
-<p style="font-size: 0.95em; line-height: 1.5; margin-bottom: 25px;">
+        <div style="max-width: 800px; margin: 0 auto;">
+            <h3 style="color: #00d4ff; margin-bottom: 15px; letter-spacing: 2px; text-transform: uppercase;">AgriFarm</h3>
+            <p style="font-size: 0.95em; line-height: 1.5; margin-bottom: 25px;">
                 Plateforme communautaire dédiée aux passionnés de Farming Simulator et d'agriculture.<br>
                 Rejoignez notre aventure sur nos serveurs officiels et partageons ensemble la passion pour le monde agricole.
-</p>
-<div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 25px;">
-<a href="mailto:contact.commufs@gmail.com" style="color: white; text-decoration: none; font-weight: bold; transition: 0.3s;">Contact</a>
-<span style="color: #444;">|</span>
-<a href="#" style="color: white; text-decoration: none; font-weight: bold; transition: 0.3s;">Mentions Légales</a>
-<span style="color: #444;">|</span>
-<a href="https://discord.gg/4hpynqxrtp" style="color: white; text-decoration: none; font-weight: bold; transition: 0.3s;">Discord</a>
-</div>
-<div style="border-top: 1px solid #444; padding-top: 20px; font-size: 0.8em;">
-&copy; 2026 AgriFarm - Tous droits réservés. <br>
-<span style="color: #555;">Site crée par MultiGame et Julien</span>
-</div>
-</div>
-</footer>
- 
+            </p>
+            
+            <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 25px;">
+                <a href="mailto:contact.commufs@gmail.com" style="color: white; text-decoration: none; font-weight: bold; transition: 0.3s;">Contact</a>
+                <span style="color: #444;">|</span>
+                <a href="#" style="color: white; text-decoration: none; font-weight: bold; transition: 0.3s;">Mentions Légales</a>
+                <span style="color: #444;">|</span>
+                <a href="https://discord.gg/4hpynqxrtp" style="color: white; text-decoration: none; font-weight: bold; transition: 0.3s;">Discord</a>
+            </div>
+            
+            <div style="border-top: 1px solid #444; padding-top: 20px; font-size: 0.8em;">
+                &copy; 2026 AgriFarm - Tous droits réservés. <br>
+                <span style="color: #555;">Site crée par MultiGame et Julien</span>
+            </div>
+        </div>
+    </footer>
+
 <style>
- 
+
   :root {
-    --couleur-principale: #444444; 
+    --couleur-principale: #444444; /* Définition de la variable */
   }
- 
+
   body {
-    background-color: var(--couleur-principale); 
+    background-color: var(--couleur-principale); /* Utilisation */
   }
 </style>
