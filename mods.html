@@ -180,6 +180,58 @@
         };
     </script>
 
+
+
+<div id="container-mods-dynamiques" class="container"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+<script>
+(function() {
+    const config = {
+        apiKey: "AIzaSyB_xwK8gHnss43r5Y2qS6kxnYfq5lY0xcE",
+        databaseURL: "https://agrifarm-67c1f-default-rtdb.europe-west1.firebasedatabase.app/"
+    };
+    const app = !firebase.apps.length ? firebase.initializeApp(config) : firebase.app();
+    const db = app.database();
+    const container = document.getElementById('container-mods-dynamiques');
+
+    db.ref('mods').on('value', (snapshot) => {
+        container.innerHTML = "";
+        snapshot.forEach((child) => {
+            const mod = child.val();
+            
+            // Génération des badges pour CHAQUE tag
+            let tagsHTML = "";
+            if(mod.tags && Array.isArray(mod.tags)) {
+                mod.tags.forEach(t => {
+                    tagsHTML += `<span class="tag">${t}</span> `;
+                });
+            }
+
+            container.innerHTML += `
+                <div class="cadre">
+                    <div class="badge">${mod.badge}</div>
+                    <img src="${mod.image}" alt="${mod.nom}">
+                    <h3>${mod.nom}</h3>
+                    <div class="tags">${tagsHTML}</div>
+                    <p>${mod.description}</p>
+                    <div class="meta-info">
+                        <div class="rating">${mod.etoiles}</div>
+                        <div class="file-size">${mod.taille}</div>
+                    </div>
+                    <a href="${mod.lienComp}" class="btn-secondary">⚙️ Mods compatibles</a>
+                    <a href="${mod.lienDL}" class="btn" target="_blank">Télécharger</a>
+                </div>
+            `;
+        });
+    });
+})();
+</script>
+
+
+
 </div> <footer style="background-color: #2b2b2b; color: #b0b0b0; padding: 40px 20px; text-align: center; border-top: 2px solid #00d4ff; width: 100%; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; box-shadow: 0 -5px 15px rgba(0,0,0,0.3);">
     <div style="max-width: 800px; margin: 0 auto;">
         <h3 style="color: #00d4ff; margin-bottom: 15px; letter-spacing: 2px; text-transform: uppercase;">AgriFarm</h3>
