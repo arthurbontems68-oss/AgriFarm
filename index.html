@@ -301,7 +301,79 @@
 </script>
 <div style="background-color: #444444; border: 2px solid; #ffc65d;border-radius: 15px;color: #444444; padding: 20px; text-align: center; font-family: sans-serif;"></div>
 
+<div id="agrifarm-news-component" style="font-family: 'Segoe UI', sans-serif;">
+    <style>
+        #agrifarm-news-component .news-card {
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto 20px auto; /* Espace entre les posts */
+            background: #161b22;
+            border-radius: 12px;
+            border: 1px solid #30363d;
+            overflow: hidden;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            animation: fadeIn 0.5s ease;
+        }
+        #agrifarm-news-component .news-header {
+            background: rgba(0, 212, 255, 0.1);
+            padding: 15px 20px;
+            border-bottom: 2px solid #00d4ff;
+        }
+        #agrifarm-news-component .news-body { padding: 20px; line-height: 1.6; color: #c9d1d9; }
+        #agrifarm-news-component .news-date { font-size: 0.75em; color: #8b949e; margin-top: 15px; display: block; font-style: italic; }
+        #agrifarm-news-component h2 { margin: 0; color: #00d4ff; font-size: 1.25em; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 
+    <div id="annonce-dynamic-content">
+        <p style="text-align:center; color:#8b949e; padding: 20px;">Chargement des dernières annonces...</p>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+    <script>
+        (function() {
+            const firebaseConfig = {
+                apiKey: "AIzaSyB_xwK8gHnss43r5Y2qS6kxnYfq5lY0xcE",
+                authDomain: "agrifarm-67c1f.firebaseapp.com",
+                databaseURL: "https://agrifarm-67c1f-default-rtdb.europe-west1.firebasedatabase.app/",
+                projectId: "agrifarm-67c1f",
+                storageBucket: "agrifarm-67c1f.appspot.com"
+            };
+
+            const app = !firebase.apps.length ? firebase.initializeApp(firebaseConfig) : firebase.app();
+            const database = firebase.database(app);
+
+            // On demande l'historique, trié par clé, en prenant les 3 derniers
+            database.ref('news/historique').limitToLast(3).on('value', (snap) => {
+                const container = document.getElementById('annonce-dynamic-content');
+                const data = snap.val();
+                
+                if (data) {
+                    // Firebase renvoie un objet, on le transforme en tableau et on l'inverse 
+                    // pour avoir le plus récent en premier (haut de page)
+                    const items = Object.values(data).reverse();
+                    
+                    container.innerHTML = items.map(post => `
+                        <div class="news-card">
+                            <div class="news-header">
+                                <h2>📢 ${post.titre}</h2>
+                            </div>
+                            <div class="news-body">
+                                <p style="white-space: pre-wrap; margin:0;">${post.message}</p>
+                                <span class="news-date">Mise à jour le ${post.date}</span>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = "<p style='text-align:center; color:#555;'>Aucune annonce pour le moment.</p>";
+                }
+            });
+        })();
+    </script>
+</div>
 
 <style>
     .titre-main { 
@@ -348,7 +420,7 @@
         .cadre { padding: 20px; }
     }
 </style>
-
+<div style="background-color: #444444; border: 2px solid; #ffc65d;border-radius: 15px;color: #444444; padding: 20px; text-align: center; font-family: sans-serif;"></div>
 <div class="titre-main">
     <h1>Foire Aux Questions (FAQ)</h1>
 </div>
@@ -432,5 +504,4 @@
         padding: 0;
     }
 </style>
-
 
