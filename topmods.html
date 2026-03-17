@@ -148,30 +148,15 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
     <style>
-        .timer-minimal {
-            display: flex; gap: 15px; justify-content: center; align-items: center;
-            font-family: 'Segoe UI', sans-serif; color: white; margin: 20px auto;
-        }
+        .timer-minimal { display: flex; gap: 15px; justify-content: center; align-items: center; font-family: 'Segoe UI', sans-serif; color: white; margin: 20px auto; }
         .time-unit { display: flex; flex-direction: column; align-items: center; }
         .digit-group { display: flex; gap: 2px; }
-        .slot {
-            height: 2.5rem; width: 1.6rem; overflow: hidden; position: relative;
-            background: rgba(255, 255, 255, 0.05); border-radius: 4px;
-        }
+        .slot { height: 2.5rem; width: 1.6rem; overflow: hidden; position: relative; background: rgba(255, 255, 255, 0.05); border-radius: 4px; }
         .slot-inner { display: flex; flex-direction: column; transition: none; }
         .roll-up { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); transform: translateY(-2.5rem); }
-        .slot span {
-            display: block; height: 2.5rem; width: 1.6rem; font-size: 2.5rem;
-            font-weight: 900; line-height: 2.5rem; text-align: center;
-            text-shadow: 0 0 10px rgba(0, 132, 255, 0.5); font-family: 'Segoe UI', sans-serif;
-        }
-        .time-unit small {
-            font-size: 0.65rem; color: #0084ff; text-transform: uppercase;
-            letter-spacing: 1px; font-weight: bold; margin-top: 5px;
-            font-family: 'Segoe UI', sans-serif;
-        }
+        .slot span { display: block; height: 2.5rem; width: 1.6rem; font-size: 2.5rem; font-weight: 900; line-height: 2.5rem; text-align: center; text-shadow: 0 0 10px rgba(0, 132, 255, 0.5); font-family: 'Segoe UI', sans-serif; }
+        .time-unit small { font-size: 0.65rem; color: #0084ff; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; margin-top: 5px; font-family: 'Segoe UI', sans-serif; }
         .separator { font-size: 1.5rem; color: rgba(255, 255, 255, 0.3); margin-bottom: 20px; }
-
         .mods-container-simple { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; font-family: 'Segoe UI', sans-serif; }
         .mod-card-simple { background-color: #1a1c20; width: 300px; border-radius: 12px; overflow: hidden; border: 1px solid #30363d; color: white; box-shadow: 0 10px 20px rgba(0,0,0,0.3); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.3s ease; }
         .mod-card-simple:hover { transform: translateY(-8px); border-color: #0084ff; }
@@ -221,7 +206,7 @@
                 <a href="https://www.kingmods.net/en/fs25/mods/68668/massey-ferguson-7700" style="display: block; text-align: center; background: rgba(255, 255, 255, 0.05); color: #9da5af; text-decoration: none; font-size: 0.75em; font-weight: bold; padding: 8px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #30363d;">VOIR LE MOD</a>
                 <div class="vote-container-simple">
                     <span class="vote-number-simple" id="nb-1">0</span>
-                    <button class="vote-btn-simple" onclick="voterMod(1, 'Case')">▲ VOTER</button>
+                    <button class="vote-btn-simple" onclick="voterMod(1, 'Massey Ferguson 7700')">▲ VOTER</button>
                 </div>
             </div>
         </div>
@@ -234,7 +219,7 @@
                 <a href="https://www.kingmods.net/en/fs25/mods/60037/fendt-700-vario-gen67" style="display: block; text-align: center; background: rgba(255, 255, 255, 0.05); color: #9da5af; text-decoration: none; font-size: 0.75em; font-weight: bold; padding: 8px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #30363d;">VOIR LE MOD</a>
                 <div class="vote-container-simple">
                     <span class="vote-number-simple" id="nb-2">0</span>
-                    <button class="vote-btn-simple" onclick="voterMod(2, 'Massey')">▲ VOTER</button>
+                    <button class="vote-btn-simple" onclick="voterMod(2, 'Fendt 700 Vario Gen6')">▲ VOTER</button>
                 </div>
             </div>
         </div>
@@ -247,7 +232,7 @@
                 <a href="https://www.kingmods.net/en/fs25/mods/75819/john-deere-6r-110-150-edit" style="display: block; text-align: center; background: rgba(255, 255, 255, 0.05); color: #9da5af; text-decoration: none; font-size: 0.75em; font-weight: bold; padding: 8px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #30363d;">VOIR LE MOD</a>
                 <div class="vote-container-simple">
                     <span class="vote-number-simple" id="nb-3">0</span>
-                    <button class="vote-btn-simple" onclick="voterMod(3, 'New Holland')">▲ VOTER</button>
+                    <button class="vote-btn-simple" onclick="voterMod(3, 'John Deere 6R')">▲ VOTER</button>
                 </div>
             </div>
         </div>
@@ -260,7 +245,7 @@
                 <a href="https://www.kingmods.net/en/fs25/mods/63621/case-ih-magnum-20078-series" style="display: block; text-align: center; background: rgba(255, 255, 255, 0.05); color: #9da5af; text-decoration: none; font-size: 0.75em; font-weight: bold; padding: 8px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #30363d;">VOIR LE MOD</a>
                 <div class="vote-container-simple">
                     <span class="vote-number-simple" id="nb-4">0</span>
-                    <button class="vote-btn-simple" onclick="voterMod(4, 'Mod 4')">▲ VOTER</button>
+                    <button class="vote-btn-simple" onclick="voterMod(4, 'Case IH Magnum')">▲ VOTER</button>
                 </div>
             </div>
         </div>
@@ -273,15 +258,17 @@
                 <a href="https://www.kingmods.net/en/fs25/mods/75798/fiatagri-f140-dt" style="display: block; text-align: center; background: rgba(255, 255, 255, 0.05); color: #9da5af; text-decoration: none; font-size: 0.75em; font-weight: bold; padding: 8px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #30363d;">VOIR LE MOD</a>
                 <div class="vote-container-simple">
                     <span class="vote-number-simple" id="nb-5">0</span>
-                    <button class="vote-btn-simple" onclick="voterMod(5, 'Mod 5')">▲ VOTER</button>
+                    <button class="vote-btn-simple" onclick="voterMod(5, 'Fiatagri F140-DT')">▲ VOTER</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="global-msg-simple">⚠️ Tu as déjà voté, reviens demain !</div>
+    <div id="global-msg-simple">⚠️ Limite de 3 votes par jour atteinte !</div>
 
-  
+    <p style="color: #9da5af; font-size: 0.9em; margin-top: 25px; font-weight: 500; letter-spacing: 0.5px; text-align: center; font-family: 'Segoe UI', sans-serif;">
+        Le nombre de votes public sera annoncé à la fin des votes
+    </p>
 
     <script>
         (function() {
@@ -355,11 +342,16 @@
             window.voterMod = function(id, modName) {
                 if (isExpired) return;
 
-                const lastVoteDate = localStorage.getItem('last_vote_date');
                 const today = new Date().toLocaleDateString();
+                let voteData = JSON.parse(localStorage.getItem('vote_tracker') || '{"date":"","count":0}');
 
-                if (lastVoteDate === today) {
+                if (voteData.date !== today) {
+                    voteData = { date: today, count: 0 };
+                }
+
+                if (voteData.count >= 3) {
                     document.getElementById('global-msg-simple').style.display = 'block';
+                    disableAll(false);
                     return;
                 }
 
@@ -368,8 +360,13 @@
                     return (currentValue || 0) + 1;
                 }, (error, committed, snapshot) => {
                     if (committed) {
-                        localStorage.setItem('last_vote_date', today);
-                        disableAll(false);
+                        voteData.count++;
+                        localStorage.setItem('vote_tracker', JSON.stringify(voteData));
+                        
+                        if (voteData.count >= 3) {
+                            disableAll(false);
+                        }
+
                         const newScore = snapshot.val();
                         fetch(DISCORD_WEBHOOK_URL, {
                             method: 'POST',
@@ -395,15 +392,15 @@
             function disableAll(finished) {
                 document.querySelectorAll('.vote-btn-simple').forEach(b => {
                     b.disabled = true;
-                    b.innerText = finished ? "CLOS" : "VOTÉ";
+                    b.innerText = finished ? "CLOS" : "LIMITE ATTEINTE";
                 });
                 if (!finished) document.getElementById('global-msg-simple').style.display = 'block';
             }
 
             function checkVoteStatus() {
-                const lastVoteDate = localStorage.getItem('last_vote_date');
                 const today = new Date().toLocaleDateString();
-                if (lastVoteDate === today) {
+                const voteData = JSON.parse(localStorage.getItem('vote_tracker') || '{"date":"","count":0}');
+                if (voteData.date === today && voteData.count >= 3) {
                     disableAll(false);
                 }
             }
@@ -414,8 +411,6 @@
         })();
     </script>
 </div>
-
-
 
 <div style="text-align: center; margin: 40px 0; font-family: 'Segoe UI', sans-serif;">
     <h3 style="color: #0084ff; font-size: 1.5em; text-transform: uppercase; letter-spacing: 2px; margin: 0;">
