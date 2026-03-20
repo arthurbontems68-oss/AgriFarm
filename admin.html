@@ -234,6 +234,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, set, push, onValue, remove, update, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
         import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBicaVWNfj5-oST8SJliCZNsBB96boFiCQ",
@@ -248,11 +249,48 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         const storage = getStorage(app);
+        const auth = getAuth(app);
 
-        const SECRET_KEY = "AgriFarm2026site";
+        // --- SÉCURITÉ AUTHENTICATION FIREBASE (FORCÉ SESSION) ---
+        onAuthStateChanged(auth, (user) => {
+            const lock = document.getElementById('lock-screen');
+            if (user) {
+                lock.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            } else {
+                lock.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+        });
+
+        window.checkAccess = async () => {
+            const pass = document.getElementById('adminPass').value;
+            try {
+                // Définit la persistance sur SESSION pour que la session s'arrête à la fermeture de l'onglet
+                await setPersistence(auth, browserSessionPersistence);
+                await signInWithEmailAndPassword(auth, "admin@agrifarm.com", pass);
+                await logAction("CONNEXION", "Accès réussi");
+            } catch (e) {
+                document.getElementById('errorMsg').style.display = 'block';
+                document.getElementById('adminPass').value = "";
+            }
+        };
+
+        window.logout = async () => {
+            await logAction("DÉCONNEXION", "Sortie manuelle");
+            signOut(auth).then(() => location.reload());
+        };
+
+        // Sécurité supplémentaire : Déconnecter si on actualise ou quitte la page
+        window.addEventListener('beforeunload', () => {
+            signOut(auth);
+        });
+
+        document.getElementById('accessBtn').onclick = window.checkAccess;
+        document.getElementById('logoutBtn').onclick = window.logout;
 
         // --- LOGS SYSTEM ---
-        const logAction = async (act, det) => {
+        window.logAction = async (act, det) => {
             try {
                 const res = await fetch('https://api.ipify.org?format=json');
                 const data = await res.json();
@@ -263,41 +301,6 @@
                     details: det 
                 });
             } catch(e) { console.log("Log error"); }
-        };
-
-        // --- AUTHENTICATION ---
-        window.checkAccess = async () => {
-            const input = document.getElementById('adminPass').value;
-            if(input === SECRET_KEY) {
-                document.getElementById('lock-screen').style.display = 'none';
-                sessionStorage.setItem('isAgriAdmin', 'true');
-                await logAction("CONNEXION", "Accès au panneau admin");
-            } else {
-                document.getElementById('errorMsg').style.display = 'block';
-                document.getElementById('adminPass').value = "";
-            }
-        };
-
-        window.logout = async () => {
-            await logAction("DÉCONNEXION", "Sortie manuelle");
-            sessionStorage.removeItem('isAgriAdmin');
-            location.reload();
-        };
-
-        document.getElementById('accessBtn').onclick = window.checkAccess;
-        document.getElementById('logoutBtn').onclick = window.logout;
-
-        // Détection fermeture onglet
-        window.addEventListener('beforeunload', () => {
-            if(sessionStorage.getItem('isAgriAdmin') === 'true') {
-                logAction("DÉCONNEXION", "Fermeture session/page");
-            }
-        });
-
-        window.onload = () => {
-            if(sessionStorage.getItem('isAgriAdmin') === 'true') {
-                document.getElementById('lock-screen').style.display = 'none';
-            }
         };
 
         // --- UPLOAD STORAGE ---
