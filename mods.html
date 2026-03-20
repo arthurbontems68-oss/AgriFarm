@@ -1,0 +1,581 @@
+<script src="anti-devtools.js"></script>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriFarm | Mods</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --accent: #00d4ff;
+            --dark: #1e272e;
+            --light: #f5f6fa;
+            --gold: #ffc65d;
+            --card-bg: #242b2d;
+            --admin-red: #e74c3c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            background-color: #2d3436;
+            color: white;
+            line-height: 1.6;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            display: flex;
+            align-items: center;
+            padding: 15px 5%;
+            background: rgba(30, 39, 46, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .logo {
+            flex: 1;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        nav ul {
+            flex: 2;
+            display: flex;
+            list-style: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        nav ul li { margin: 0 12px; }
+
+        nav ul li a {
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        nav ul li a:hover { color: var(--gold); }
+        .active { color: var(--gold) !important; }
+
+        .nav-right {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn-nav {
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            transition: 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-discord { background: var(--primary); }
+        .btn-admin-nav { background: var(--admin-red); }
+
+        .btn-nav:hover {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+        }
+
+        /* --- MODAL ADMIN --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+        }
+
+        .modal-content {
+            background: var(--dark);
+            margin: 15% auto;
+            padding: 40px;
+            border: 2px solid var(--admin-red);
+            width: 350px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(231, 76, 60, 0.3);
+        }
+
+        .modal-content h2 { margin-bottom: 20px; color: var(--admin-red); text-transform: uppercase; }
+        .modal-content input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background: #333;
+            color: white;
+            text-align: center;
+            outline: none;
+        }
+
+        /* --- CONTENU PRINCIPAL --- */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        section { 
+            padding: 60px 10%; 
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modhub-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            flex: 1;
+        }
+
+        .empty-msg {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            min-height: 200px;
+            color: #888;
+            font-size: 1.1rem;
+            font-style: italic;
+        }
+
+        .mod-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mod-card:hover {
+            transform: translateY(-12px);
+            border-color: var(--accent);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+        }
+
+        .image-box {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .mod-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: 0.5s;
+        }
+
+        .mod-card:hover .mod-img { transform: scale(1.1); }
+
+        .tag-badge {
+            position: absolute; top: 15px; left: 15px;
+            background: var(--accent); color: #000;
+            padding: 4px 12px; border-radius: 50px;
+            font-size: 0.7rem; font-weight: 800; text-transform: uppercase;
+            z-index: 10;
+        }
+
+        .version-badge {
+            position: absolute; top: 15px; right: 15px;
+            background: rgba(0,0,0,0.7); color: white;
+            padding: 4px 10px; border-radius: 8px; font-size: 0.7rem;
+            backdrop-filter: blur(5px);
+            z-index: 10;
+        }
+
+        .mod-body { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; }
+        .mod-stars { color: var(--gold); font-size: 0.85rem; margin-bottom: 8px; }
+        .mod-title { font-size: 1.3rem; font-weight: 700; color: #fff; margin-bottom: 5px; }
+        .mod-author { font-size: 0.8rem; color: var(--accent); margin-bottom: 15px; font-weight: 600; }
+        .mod-desc { font-size: 0.85rem; color: #bbb; margin-bottom: 20px; line-height: 1.4; }
+
+        .mod-info-bar {
+            display: flex; justify-content: space-between;
+            background: rgba(0,0,0,0.2); padding: 12px;
+            border-radius: 12px; margin-bottom: 20px; font-size: 0.75rem;
+        }
+        .stat-item { display: flex; align-items: center; gap: 6px; color: #ddd; }
+
+        .btn-dl {
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            color: white; text-align: center; padding: 14px;
+            border-radius: 12px; text-decoration: none; font-weight: 700;
+            transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px;
+            margin-top: auto;
+        }
+
+        .btn-dl:hover { filter: brightness(1.2); letter-spacing: 0.5px; }
+
+        @media (max-width: 1024px) {
+            nav { flex-direction: column; padding: 20px; }
+            nav ul { margin-top: 15px; flex-wrap: wrap; justify-content: center; }
+            .nav-right { justify-content: center; margin-top: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <h2>Accès Restreint</h2>
+            <p style="font-size: 0.8rem; margin-bottom: 15px; color: #ccc;">Veuillez entrer le mot de passe administrateur</p>
+            <input type="password" id="adminPass" placeholder="Mot de passe">
+            <button class="btn-nav btn-admin-nav" style="width: 100%;" onclick="checkPassword()">Se connecter</button>
+            <p id="errorMsg" style="color: #ff7675; font-size: 0.85rem; margin-top: 15px; display: none; font-weight: 600;">⚠️ Mot de passe incorrect !</p>
+        </div>
+    </div>
+
+    <nav>
+        <div class="logo">AgriFarm</div>
+        <ul>
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="map.html">Map</a></li>
+            <li><a href="equipe.html">Equipe</a></li>
+            <li><a href="serveur.html">Serveurs</a></li>
+            <li><a href="mods.html" class="active">Mods</a></li>
+            <li><a href="tuto.html">Tuto</a></li>
+            <li><a href="topmods.html">TopMods</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+        <div class="nav-right">
+            <button class="btn-nav btn-admin-nav" onclick="openModal()"><i class="fas fa-lock"></i> Admin</button>
+            <a href="https://discord.gg/4hpynqxrtp" class="btn-nav btn-discord">Discord</a>
+        </div>
+    </nav>
+
+    <main>
+        <header style="padding: 60px 10% 0; text-align: center;">
+            <h1 style="font-size: 2.5rem; color: var(--gold); text-transform: uppercase;">ModHub AgriFarm</h1>
+            <p style="color: #888;">Retrouvez tous les outils et véhicules officiels de la communauté.</p>
+            <div style="width: 80px; height: 4px; background: var(--accent); margin: 15px auto; border-radius: 2px;"></div>
+        </header>
+
+        <section>
+            <div class="modhub-grid" id="modsContainer">
+                <div class="empty-msg">Chargement du catalogue...</div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function openModal() {
+            document.getElementById('adminModal').style.display = 'block';
+            document.getElementById('adminPass').focus();
+        }
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('adminModal')) {
+                document.getElementById('adminModal').style.display = "none";
+            }
+        }
+        function checkPassword() {
+            if (document.getElementById('adminPass').value === "AgriFarm2026site") {
+                window.location.href = "admin.html";
+            } else {
+                document.getElementById('errorMsg').style.display = "block";
+            }
+        }
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBicaVWNfj5-oST8SJliCZNsBB96boFiCQ",
+            authDomain: "agrifarm-89233.firebaseapp.com",
+            databaseURL: "https://agrifarm-89233-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "agrifarm-89233",
+            storageBucket: "agrifarm-89233.firebasedatabase.app",
+            messagingSenderId: "292956001212",
+            appId: "1:292956001212:web:cae1c04e35b50a2a5c51b9"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const container = document.getElementById('modsContainer');
+
+        onValue(ref(db, 'mods'), (snapshot) => {
+            const data = snapshot.val();
+            container.innerHTML = ""; 
+            
+            if(data) {
+                Object.keys(data).reverse().forEach(key => {
+                    const mod = data[key];
+                    let starsHTML = "⭐".repeat(parseInt(mod.stars || 5));
+
+                    container.innerHTML += `
+                        <div class="mod-card">
+                            <div class="image-box">
+                                <span class="tag-badge">${mod.tag}</span>
+                                <span class="version-badge">v${mod.version}</span>
+                                <img src="${mod.image}" class="mod-img" alt="${mod.name}">
+                            </div>
+                            <div class="mod-body">
+                                <div class="mod-stars">${starsHTML}</div>
+                                <h3 class="mod-title">${mod.name}</h3>
+                                <span class="mod-author">par ${mod.author}</span>
+                                <p class="mod-desc">${mod.desc}</p>
+                                
+                                <div class="mod-info-bar">
+                                    <div class="stat-item"><i class="fas fa-file-archive"></i> ${mod.size}</div>
+                                    <div class="stat-item"><i class="fas fa-calendar-alt"></i> ${mod.date}</div>
+                                </div>
+
+                                <a href="${mod.link}" target="_blank" class="btn-dl">
+                                    <i class="fas fa-download"></i> TÉLÉCHARGER
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                container.innerHTML = "<div class='empty-msg'>Aucun mod disponible pour le moment.</div>";
+            }
+        });
+    </script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+    }
+
+    :root {
+        --f-bg: #111418;
+        --f-accent: #00d4ff; 
+        --f-text: #9da5af;
+        --f-discord: #5865F2;
+        --f-youtube: #FF0000;
+    }
+
+    .main-footer {
+        background: var(--f-bg);
+        width: 100vw;
+        position: relative;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+        padding: 60px 0 40px 0;
+        margin-top: 80px;
+        border-top: 3px solid var(--f-accent);
+        font-family: 'Poppins', sans-serif;
+        color: white;
+    }
+
+    .footer-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 5%;
+    }
+
+    .footer-content {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        /* Aligne le haut de toutes les colonnes */
+        align-items: start; 
+    }
+
+    /* HARMONISATION TOTALE DES TITRES */
+    .footer-section h3, 
+    .footer-section .logo-text {
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        /* On force les mêmes marges et hauteurs de ligne */
+        margin: 0 0 25px 0; 
+        padding: 0;
+        line-height: 1.2;
+        display: block;
+        text-decoration: none;
+        font-family: 'Poppins', sans-serif;
+        position: relative;
+    }
+
+    /* La barre bleue sous chaque titre */
+    .footer-section h3::after,
+    .footer-section .logo-text::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 30px;
+        height: 2px;
+        background: var(--f-accent);
+    }
+
+    .footer-section p {
+        color: var(--f-text);
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-top: 0; /* Évite les décalages */
+    }
+
+    /* --- LES 4 CASES RÉSEAUX SOCIAUX --- */
+    .footer-socials {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .footer-socials a {
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        color: white;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .footer-socials a.soc-discord:hover {
+        background: var(--f-discord);
+        border-color: var(--f-discord);
+        transform: translateY(-3px);
+    }
+
+    .footer-socials a.soc-youtube:hover {
+        background: var(--f-youtube);
+        border-color: var(--f-youtube);
+        transform: translateY(-3px);
+    }
+
+    /* --- LIENS --- */
+    .footer-links { 
+        list-style: none; 
+        padding: 0; 
+        margin: 0; 
+    }
+    .footer-links li { margin-bottom: 12px; }
+    .footer-links a {
+        color: var(--f-text);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: 0.3s;
+    }
+    .footer-links a:hover { color: var(--f-accent); padding-left: 5px; }
+
+    .footer-bottom {
+        max-width: 1200px;
+        margin: 50px auto 0;
+        padding: 25px 5% 0 5%;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        text-align: center;
+        color: #636e72;
+        font-size: 0.85rem;
+    }
+
+    @media (max-width: 900px) { 
+        .footer-content { grid-template-columns: 1fr 1fr; } 
+    }
+    @media (max-width: 600px) { 
+        .footer-content { grid-template-columns: 1fr; text-align: center; } 
+        .footer-section h3::after, .footer-section .logo-text::after { left: 50%; transform: translateX(-50%); } 
+        .footer-socials { justify-content: center; } 
+    }
+</style>
+
+<footer class="main-footer">
+    <div class="footer-container">
+        <div class="footer-content">
+            
+            <div class="footer-section">
+                <a href="index.html" class="logo-text">AGRIFARM</a>
+                <p>La référence Farming Simulator. Retrouvez les meilleurs mods et nos serveurs officiels.</p>
+                <div class="footer-socials">
+                    <a href="https://discord.gg/VQNyVwtQPV" class="soc-discord" target="_blank"><i class="fab fa-discord"></i></a>
+                    <a href="#" class="soc-youtube" target="_blank"><i class="fab fa-youtube"></i></a>
+                    <a href="https://discord.gg/VQNyVwtQPV" class="soc-discord" target="_blank"><i class="fab fa-discord"></i></a>
+                    <a href="#" class="soc-youtube" target="_blank"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h3>Explorer</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="mods.html">ModHub FS25</a></li>
+                    <li><a href="topmods.html">Classement</a></li>
+                    <li><a href="serveur.html">Nos Serveurs</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Ressources</h3>
+                <ul class="footer-links">
+                    <li><a href="tuto.html">Tutoriels</a></li>
+                    <li><a href="team.html">L'Équipe</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Mentions</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Communauté</h3>
+                <p style="opacity: 0.8;">Suivez-nous pour ne rater aucune mise à jour et rejoindre nos événements !</p>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            &copy; 2026 AgriFarm. Tous droits réservés.
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

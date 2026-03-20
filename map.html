@@ -1,0 +1,690 @@
+<script src="anti-devtools.js"></script>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriFarm | État de la Map</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --accent: #00d4ff;
+            --dark: #1e272e;
+            --gold: #ffc65d;
+            --card-bg: #3d3d3d;
+            --success: #4caf50;
+            --admin-red: #e74c3c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #2d3436;
+            color: white;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            display: flex;
+            align-items: center;
+            padding: 15px 5%;
+            background: rgba(30, 39, 46, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .logo {
+            flex: 1;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--accent);
+            text-transform: uppercase;
+        }
+
+        nav ul {
+            flex: 2;
+            display: flex;
+            list-style: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        nav ul li { margin: 0 12px; }
+
+        nav ul li a {
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        nav ul li a:hover { color: var(--gold); }
+
+        .nav-right {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn-nav {
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            transition: 0.3s;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-discord { background: var(--primary); }
+        .btn-admin-nav { background: var(--admin-red); }
+
+        .btn-nav:hover {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+        }
+
+        /* --- MODAL ADMIN --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+        }
+
+        .modal-content {
+            background: var(--dark);
+            margin: 15% auto;
+            padding: 40px;
+            border: 2px solid var(--admin-red);
+            width: 350px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(231, 76, 60, 0.3);
+        }
+
+        .modal-content h2 { margin-bottom: 20px; color: var(--admin-red); text-transform: uppercase; }
+        .modal-content input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background: #333;
+            color: white;
+            text-align: center;
+            outline: none;
+        }
+
+        /* --- HEADER --- */
+        .page-header {
+            padding: 60px 10% 20px;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            color: var(--gold);
+            text-transform: uppercase;
+        }
+
+        .line {
+            width: 80px;
+            height: 4px;
+            background: var(--accent);
+            margin: 10px auto 20px;
+            border-radius: 2px;
+        }
+
+        /* --- SECTION MAP & PROGRESSION --- */
+        .map-container {
+            padding: 20px 10% 60px;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 40px;
+        }
+
+        .map-preview {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid #444;
+            position: relative;
+            height: fit-content;
+        }
+
+        .map-preview img {
+            width: 100%;
+            display: block;
+            filter: brightness(0.8);
+        }
+
+        /* --- STYLES DES BARRES DE PROGRESSION --- */
+        .progress-section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-section h3 {
+            margin-bottom: 25px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #444;
+            padding-bottom: 10px;
+        }
+
+        .prog-item { margin-bottom: 25px; }
+
+        .prog-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .prog-bar-bg {
+            width: 100%;
+            height: 12px;
+            background: #222;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .prog-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1.5s ease-in-out;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+        }
+
+        .fill-champs { width: 85%; background: linear-gradient(90deg, #f1c40f, #f39c12); }
+        .fill-fermes { width: 60%; background: linear-gradient(90deg, #e67e22, #d35400); }
+        .fill-scripts { width: 40%; background: linear-gradient(90deg, #9b59b6, #8e44ad); }
+        .fill-deco { width: 30%; background: linear-gradient(90deg, #2ecc71, #27ae60); }
+
+        .total-card {
+            margin-top: 30px;
+            background: var(--primary);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .total-card h2 { color: var(--gold); font-size: 1.8rem; }
+
+        /* --- STYLE DU DIAPO --- */
+        .slider-container {
+            max-width: 1000px;
+            position: relative;
+            margin: 40px auto;
+            padding: 0 20px 80px;
+        }
+
+        .slides {
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            border: 3px solid var(--accent);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background: var(--card-bg);
+        }
+
+        .slide { display: none; }
+
+        .slide img {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            vertical-align: middle;
+        }
+
+        .slide-text {
+            color: #fff;
+            font-size: 15px;
+            padding: 12px 24px;
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            border-left: 4px solid var(--gold);
+        }
+
+        .prev, .next {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            width: auto;
+            padding: 16px;
+            margin-top: -22px;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+            transition: 0.6s ease;
+            border-radius: 0 3px 3px 0;
+            user-select: none;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .next { right: 0; border-radius: 3px 0 0 3px; }
+        .prev:hover, .next:hover { background-color: var(--primary); }
+
+        .dot {
+            cursor: pointer;
+            height: 12px;
+            width: 12px;
+            margin: 0 5px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+            transition: 0.6s ease;
+        }
+
+        .active, .dot:hover { background-color: var(--accent); }
+
+        .fade {
+            animation-name: fade;
+            animation-duration: 1.5s;
+        }
+
+        @keyframes fade {
+            from {opacity: .4} 
+            to {opacity: 1}
+        }
+
+        @media (max-width: 1100px) {
+            .map-container { grid-template-columns: 1fr; }
+            nav { flex-direction: column; padding: 20px; }
+            nav ul { margin-top: 15px; flex-wrap: wrap; justify-content: center; }
+            .nav-right { justify-content: center; margin-top: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <h2>Accès Restreint</h2>
+            <p style="font-size: 0.8rem; margin-bottom: 15px; color: #ccc;">Veuillez entrer le mot de passe administrateur</p>
+            <input type="password" id="adminPass" placeholder="Mot de passe">
+            <button class="btn-nav btn-admin-nav" style="width: 100%;" onclick="checkPassword()">Se connecter</button>
+            <p id="errorMsg" style="color: #ff7675; font-size: 0.85rem; margin-top: 15px; display: none; font-weight: 600;">⚠️ Mot de passe incorrect !</p>
+        </div>
+    </div>
+
+    <nav>
+        <div class="logo">AgriFarm</div>
+        <ul>
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="map.html">Map</a></li>
+            <li><a href="team.html">Equipe</a></li>
+            <li><a href="serveur.html">Serveurs</a></li>
+            <li><a href="mods.html">Mods</a></li>
+            <li><a href="tuto.html">Tuto</a></li>
+            <li><a href="topmods.html">TopMods</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+        <div class="nav-right">
+            <button class="btn-nav btn-admin-nav" onclick="openModal()"><i class="fas fa-lock"></i> Admin</button>
+            <a href="https://discord.gg/4hpynqxrtp" class="btn-nav btn-discord">Discord</a>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>Avancement de la Map</h1>
+        <div class="line"></div>
+        <p>Suivez en temps réel le développement de chaque secteur de la map MultiLand.</p>
+    </div>
+
+    <section class="map-container">
+        <div class="map-preview">
+            <img src="CommuFS.jpg" alt="Aperçu Map">
+            <div style="padding: 20px;">
+                <h3 style="color: var(--gold);">Premières images</h3>
+                <p style="font-size: 0.9rem; color: #ccc;">Map 100% Européenne</p>
+            </div>
+        </div>
+
+        <div class="progress-section">
+            <h3>Détails de le Map</h3>
+
+            <div class="prog-item">
+                <div class="prog-info"><span>Champs & Relief</span><span>85%</span></div>
+                <div class="prog-bar-bg"><div class="prog-fill fill-champs"></div></div>
+            </div>
+
+            <div class="prog-item">
+                <div class="prog-info"><span>Fermes (Bâtiments)</span><span>60%</span></div>
+                <div class="prog-bar-bg"><div class="prog-fill fill-fermes"></div></div>
+            </div>
+
+            <div class="prog-item">
+                <div class="prog-info"><span>Scripts & Gameplay</span><span>40%</span></div>
+                <div class="prog-bar-bg"><div class="prog-fill fill-scripts"></div></div>
+            </div>
+
+            <div class="prog-item">
+                <div class="prog-info"><span>Décoration & Environnement</span><span>30%</span></div>
+                <div class="prog-bar-bg"><div class="prog-fill fill-deco"></div></div>
+            </div>
+
+            <div class="total-card">
+                <p>Progression Totale</p>
+                <h2>51% Terminée</h2>
+                <p style="font-size: 0.8rem; margin-top: 5px; opacity: 0.8;">Dernière mise à jour : Décembre 2025</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slider-container">
+        <div class="slides">
+            <div class="slide fade">
+                <img src="images/map1.jpg" alt="Vue 1">
+                <div class="slide-text">Entrée du village MultiLand</div>
+            </div>
+
+            <div class="slide fade">
+                <img src="images/map2.png" alt="Vue 2">
+                <div class="slide-text">Zone Industrielle & Points de Vente</div>
+            </div>
+
+            <div class="slide fade">
+                <img src="images/map3.png" alt="Vue 3">
+                <div class="slide-text">Zones Urbaines</div>
+            </div>
+
+            <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+            <a class="next" onclick="plusSlides(1)">&#10095;</a>
+        </div>
+
+        <div style="text-align:center; margin-top: 15px;">
+            <span class="dot" onclick="currentSlide(1)"></span>
+            <span class="dot" onclick="currentSlide(2)"></span>
+            <span class="dot" onclick="currentSlide(3)"></span>
+        </div>
+    </section>
+
+    <script>
+        // --- LOGIQUE ADMIN MODAL ---
+        function openModal() {
+            document.getElementById('adminModal').style.display = 'block';
+            document.getElementById('adminPass').focus();
+        }
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('adminModal')) {
+                document.getElementById('adminModal').style.display = "none";
+            }
+        }
+        function checkPassword() {
+            if (document.getElementById('adminPass').value === "AgriFarm2026site") {
+                window.location.href = "admin.html";
+            } else {
+                document.getElementById('errorMsg').style.display = "block";
+            }
+        }
+
+        // --- LOGIQUE SLIDER ---
+        let slideIndex = 1;
+        showSlides(slideIndex);
+
+        function plusSlides(n) {
+            showSlides(slideIndex += n);
+        }
+
+        function currentSlide(n) {
+            showSlides(slideIndex = n);
+        }
+
+        function showSlides(n) {
+            let i;
+            let slides = document.getElementsByClassName("slide");
+            let dots = document.getElementsByClassName("dot");
+            if (n > slides.length) {slideIndex = 1}    
+            if (n < 1) {slideIndex = slides.length}
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";  
+            }
+            for (i = 0; i < dots.length; i++) {
+                dots[i].className = dots[i].className.replace(" active", "");
+            }
+            slides[slideIndex-1].style.display = "block";  
+            dots[slideIndex-1].className += " active";
+        }
+
+        setInterval(() => {
+            plusSlides(1);
+        }, 5000);
+    </script>
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+    }
+
+    :root {
+        --f-bg: #111418;
+        --f-accent: #00d4ff; 
+        --f-text: #9da5af;
+        --f-discord: #5865F2;
+        --f-youtube: #FF0000;
+    }
+
+    .main-footer {
+        background: var(--f-bg);
+        width: 100vw;
+        position: relative;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+        padding: 60px 0 40px 0;
+        margin-top: 80px;
+        border-top: 3px solid var(--f-accent);
+        font-family: 'Poppins', sans-serif;
+        color: white;
+    }
+
+    .footer-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 5%;
+    }
+
+    .footer-content {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        /* Aligne le haut de toutes les colonnes */
+        align-items: start; 
+    }
+
+    /* HARMONISATION TOTALE DES TITRES */
+    .footer-section h3, 
+    .footer-section .logo-text {
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        /* On force les mêmes marges et hauteurs de ligne */
+        margin: 0 0 25px 0; 
+        padding: 0;
+        line-height: 1.2;
+        display: block;
+        text-decoration: none;
+        font-family: 'Poppins', sans-serif;
+        position: relative;
+    }
+
+    /* La barre bleue sous chaque titre */
+    .footer-section h3::after,
+    .footer-section .logo-text::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 30px;
+        height: 2px;
+        background: var(--f-accent);
+    }
+
+    .footer-section p {
+        color: var(--f-text);
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-top: 0; /* Évite les décalages */
+    }
+
+    /* --- LES 4 CASES RÉSEAUX SOCIAUX --- */
+    .footer-socials {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .footer-socials a {
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        color: white;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .footer-socials a.soc-discord:hover {
+        background: var(--f-discord);
+        border-color: var(--f-discord);
+        transform: translateY(-3px);
+    }
+
+    .footer-socials a.soc-youtube:hover {
+        background: var(--f-youtube);
+        border-color: var(--f-youtube);
+        transform: translateY(-3px);
+    }
+
+    /* --- LIENS --- */
+    .footer-links { 
+        list-style: none; 
+        padding: 0; 
+        margin: 0; 
+    }
+    .footer-links li { margin-bottom: 12px; }
+    .footer-links a {
+        color: var(--f-text);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: 0.3s;
+    }
+    .footer-links a:hover { color: var(--f-accent); padding-left: 5px; }
+
+    .footer-bottom {
+        max-width: 1200px;
+        margin: 50px auto 0;
+        padding: 25px 5% 0 5%;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        text-align: center;
+        color: #636e72;
+        font-size: 0.85rem;
+    }
+
+    @media (max-width: 900px) { 
+        .footer-content { grid-template-columns: 1fr 1fr; } 
+    }
+    @media (max-width: 600px) { 
+        .footer-content { grid-template-columns: 1fr; text-align: center; } 
+        .footer-section h3::after, .footer-section .logo-text::after { left: 50%; transform: translateX(-50%); } 
+        .footer-socials { justify-content: center; } 
+    }
+</style>
+
+<footer class="main-footer">
+    <div class="footer-container">
+        <div class="footer-content">
+            
+            <div class="footer-section">
+                <a href="index.html" class="logo-text">AGRIFARM</a>
+                <p>La référence Farming Simulator. Retrouvez les meilleurs mods et nos serveurs officiels.</p>
+                <div class="footer-socials">
+                    <a href="https://discord.gg/VQNyVwtQPV" class="soc-discord" target="_blank"><i class="fab fa-discord"></i></a>
+                    <a href="#" class="soc-youtube" target="_blank"><i class="fab fa-youtube"></i></a>
+                    <a href="https://discord.gg/VQNyVwtQPV" class="soc-discord" target="_blank"><i class="fab fa-discord"></i></a>
+                    <a href="#" class="soc-youtube" target="_blank"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h3>Explorer</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="mods.html">ModHub FS25</a></li>
+                    <li><a href="topmods.html">Classement</a></li>
+                    <li><a href="serveur.html">Nos Serveurs</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Ressources</h3>
+                <ul class="footer-links">
+                    <li><a href="tuto.html">Tutoriels</a></li>
+                    <li><a href="team.html">L'Équipe</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Mentions</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Communauté</h3>
+                <p style="opacity: 0.8;">Suivez-nous pour ne rater aucune mise à jour et rejoindre nos événements !</p>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            &copy; 2026 AgriFarm. Tous droits réservés.
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

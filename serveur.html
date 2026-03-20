@@ -1,0 +1,508 @@
+<script src="anti-devtools.js"></script>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriFarm | Serveur Event Ensilage</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --accent: #00d4ff;
+            --dark: #1e272e;
+            --gold: #ffc65d;
+            --card-bg: #3d3d3d;
+            --admin-red: #e74c3c;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+        body {
+            background-color: #2d3436;
+            color: white;
+            line-height: 1.6;
+            overflow-x: hidden;
+            /* Petit rappel du fond de l'accueil */
+            background: linear-gradient(rgba(45, 52, 54, 0.9), rgba(45, 52, 54, 0.9)), 
+                        url('https://images.unsplash.com/photo-1500382017468-9049fee74a62?q=80&w=2000');
+            background-size: cover;
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            display: flex;
+            align-items: center;
+            padding: 15px 5%;
+            background: rgba(30, 39, 46, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .logo {
+            flex: 1;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        nav ul {
+            flex: 2;
+            display: flex;
+            list-style: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        nav ul li { margin: 0 12px; }
+
+        nav ul li a {
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        nav ul li a:hover, .active { color: var(--gold); }
+
+        .nav-right {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn-nav {
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            transition: 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-discord { background: var(--primary); }
+        .btn-admin-nav { background: var(--admin-red); }
+
+        /* --- HEADER --- */
+        .server-header {
+            text-align: center;
+            padding: 80px 10% 40px;
+        }
+
+        .server-header h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            color: var(--gold);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        /* --- EVENT CARD --- */
+        .event-container {
+            display: flex;
+            justify-content: center;
+            padding: 0 10% 80px;
+        }
+
+        .server-card {
+            background: var(--card-bg);
+            border-radius: 25px;
+            padding: 40px;
+            border: 2px solid var(--primary);
+            width: 100%;
+            max-width: 650px;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        .badge-live {
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--admin-red);
+            color: white;
+            padding: 10px 30px;
+            border-radius: 50px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.05); }
+            100% { transform: translateX(-50%) scale(1); }
+        }
+
+        .server-card h2 { font-size: 2.2rem; margin-bottom: 25px; color: var(--accent); text-transform: uppercase; }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 35px;
+        }
+
+        .info-item {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .info-item span { display: block; font-size: 0.8rem; color: #888; text-transform: uppercase; margin-bottom: 5px; }
+        .info-item strong { font-size: 1.2rem; color: white; }
+
+        /* --- IP BOX --- */
+        .ip-box {
+            background: #1e272e;
+            padding: 20px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            border: 1px dashed var(--gold);
+            transition: 0.3s;
+        }
+
+        .ip-box:hover { background: #263038; border-style: solid; transform: scale(1.02); }
+        .ip-box code { font-family: 'Courier New', monospace; color: var(--gold); font-size: 1.3rem; font-weight: bold; }
+
+        /* --- MODAL --- */
+        .modal {
+            display: none; position: fixed; z-index: 2000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+        }
+        .modal-content {
+            background: var(--dark); margin: 15% auto; padding: 40px;
+            border: 2px solid var(--admin-red); width: 350px; border-radius: 20px; text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <h2 style="color: var(--admin-red); margin-bottom: 20px;">ADMINISTRATION</h2>
+            <input type="password" id="adminPass" style="width:100%; padding:10px; margin-bottom:20px; border-radius:8px; border:none; text-align:center;" placeholder="Mot de passe">
+            <button class="btn-nav btn-admin-nav" style="width:100%" onclick="checkPassword()">Connexion</button>
+        </div>
+    </div>
+
+    <nav>
+        <div class="logo">AgriFarm</div>
+        <ul>
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="map.html">Map</a></li>
+            <li><a href="team.html">Equipe</a></li>
+            <li><a href="serveur.html" class="active">Serveurs</a></li>
+            <li><a href="mods.html">Mods</a></li>
+            <li><a href="tuto.html">Tuto</a></li>
+            <li><a href="topmods.html">TopMods</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+        <div class="nav-right">
+            <button class="btn-nav btn-admin-nav" onclick="openModal()"><i class="fas fa-lock"></i> Admin</button>
+            <a href="https://discord.gg/4hpynqxrtp" class="btn-nav btn-discord">Discord</a>
+        </div>
+    </nav>
+
+    <header class="server-header">
+        <h1>Serveur Événementiel</h1>
+        <div style="width: 100px; height: 4px; background: var(--accent); margin: 10px auto; border-radius: 2px;"></div>
+        <p style="margin-top: 15px; color: #ccc;">Suivez en direct l'avancement de nos sessions communautaires.</p>
+    </header>
+
+    <div class="event-container" id="eventLoader">
+        <div class="server-card">
+            <p>Récupération des données du serveur...</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBicaVWNfj5-oST8SJliCZNsBB96boFiCQ",
+            authDomain: "agrifarm-89233.firebaseapp.com",
+            databaseURL: "https://agrifarm-89233-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "agrifarm-89233",
+            storageBucket: "agrifarm-89233.firebasestorage.app",
+            messagingSenderId: "292956001212",
+            appId: "1:292956001212:web:cae1c04e35b50a2a5c51b9"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const eventLoader = document.getElementById('eventLoader');
+
+        onValue(ref(db, 'serverEvent'), (snapshot) => {
+            const data = snapshot.val();
+            if(data) {
+                eventLoader.innerHTML = `
+                    <div class="server-card">
+                        <div class="badge-live">${data.badge || 'EVENT LIVE'}</div>
+                        <h2><i class="fas fa-tractor"></i> ${data.nom}</h2>
+                        
+                        <div class="info-grid">
+                            <div class="info-item"><span>Map Actuelle</span><strong>${data.map}</strong></div>
+                            <div class="info-item"><span>Places</span><strong>${data.slots}</strong></div>
+                            <div class="info-item"><span>Matériel autorisé</span><strong>${data.materiel}</strong></div>
+                            <div class="info-item"><span>Statut</span><strong style="color:${data.statut === 'Ouvert' ? '#2ecc71' : '#e74c3c'}">${data.statut}</strong></div>
+                        </div>
+
+                        <p style="margin-bottom: 10px; font-size: 0.9rem; color:#aaa;">Clique pour copier l'adresse IP :</p>
+                        <div class="ip-box" onclick="copyIP('${data.ip}')">
+                            <code>${data.ip}</code>
+                            <i class="far fa-copy" style="color: var(--gold);"></i>
+                        </div>
+                    </div>
+                `;
+            } else {
+                eventLoader.innerHTML = `<div class="server-card"><p>Aucun événement programmé pour le moment.</p></div>`;
+            }
+        });
+
+        window.copyIP = (text) => {
+            navigator.clipboard.writeText(text);
+            alert("IP copiée : " + text);
+        };
+    </script>
+
+    <script>
+        function openModal() { document.getElementById('adminModal').style.display = 'block'; }
+        function checkPassword() {
+            if (document.getElementById('adminPass').value === "AgriFarm2026site") {
+                window.location.href = "admin.html";
+            } else { alert("Code erroné !"); }
+        }
+        window.onclick = function(e) { if(e.target == document.getElementById('adminModal')) document.getElementById('adminModal').style.display = 'none'; }
+    </script>
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+    }
+
+    :root {
+        --f-bg: #111418;
+        --f-accent: #00d4ff; 
+        --f-text: #9da5af;
+        --f-discord: #5865F2;
+        --f-youtube: #FF0000;
+    }
+
+    .main-footer {
+        background: var(--f-bg);
+        width: 100vw;
+        position: relative;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+        padding: 60px 0 40px 0;
+        margin-top: 80px;
+        border-top: 3px solid var(--f-accent);
+        font-family: 'Poppins', sans-serif;
+        color: white;
+    }
+
+    .footer-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 5%;
+    }
+
+    .footer-content {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        /* Aligne le haut de toutes les colonnes */
+        align-items: start; 
+    }
+
+    /* HARMONISATION TOTALE DES TITRES */
+    .footer-section h3, 
+    .footer-section .logo-text {
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        /* On force les mêmes marges et hauteurs de ligne */
+        margin: 0 0 25px 0; 
+        padding: 0;
+        line-height: 1.2;
+        display: block;
+        text-decoration: none;
+        font-family: 'Poppins', sans-serif;
+        position: relative;
+    }
+
+    /* La barre bleue sous chaque titre */
+    .footer-section h3::after,
+    .footer-section .logo-text::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 30px;
+        height: 2px;
+        background: var(--f-accent);
+    }
+
+    .footer-section p {
+        color: var(--f-text);
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-top: 0; /* Évite les décalages */
+    }
+
+    /* --- LES 4 CASES RÉSEAUX SOCIAUX --- */
+    .footer-socials {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .footer-socials a {
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        color: white;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .footer-socials a.soc-discord:hover {
+        background: var(--f-discord);
+        border-color: var(--f-discord);
+        transform: translateY(-3px);
+    }
+
+    .footer-socials a.soc-youtube:hover {
+        background: var(--f-youtube);
+        border-color: var(--f-youtube);
+        transform: translateY(-3px);
+    }
+
+    /* --- LIENS --- */
+    .footer-links { 
+        list-style: none; 
+        padding: 0; 
+        margin: 0; 
+    }
+    .footer-links li { margin-bottom: 12px; }
+    .footer-links a {
+        color: var(--f-text);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: 0.3s;
+    }
+    .footer-links a:hover { color: var(--f-accent); padding-left: 5px; }
+
+    .footer-bottom {
+        max-width: 1200px;
+        margin: 50px auto 0;
+        padding: 25px 5% 0 5%;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        text-align: center;
+        color: #636e72;
+        font-size: 0.85rem;
+    }
+
+    @media (max-width: 900px) { 
+        .footer-content { grid-template-columns: 1fr 1fr; } 
+    }
+    @media (max-width: 600px) { 
+        .footer-content { grid-template-columns: 1fr; text-align: center; } 
+        .footer-section h3::after, .footer-section .logo-text::after { left: 50%; transform: translateX(-50%); } 
+        .footer-socials { justify-content: center; } 
+    }
+</style>
+
+<footer class="main-footer">
+    <div class="footer-container">
+        <div class="footer-content">
+            
+            <div class="footer-section">
+                <a href="index.html" class="logo-text">AGRIFARM</a>
+                <p>La référence Farming Simulator. Retrouvez les meilleurs mods et nos serveurs officiels.</p>
+                <div class="footer-socials">
+                    <a href="https://discord.gg/VQNyVwtQPV" class="soc-discord" target="_blank"><i class="fab fa-discord"></i></a>
+                    <a href="#" class="soc-youtube" target="_blank"><i class="fab fa-youtube"></i></a>
+                    <a href="https://discord.gg/VQNyVwtQPV" class="soc-discord" target="_blank"><i class="fab fa-discord"></i></a>
+                    <a href="#" class="soc-youtube" target="_blank"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h3>Explorer</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="mods.html">ModHub FS25</a></li>
+                    <li><a href="topmods.html">Classement</a></li>
+                    <li><a href="serveur.html">Nos Serveurs</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Ressources</h3>
+                <ul class="footer-links">
+                    <li><a href="tuto.html">Tutoriels</a></li>
+                    <li><a href="team.html">L'Équipe</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Mentions</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Communauté</h3>
+                <p style="opacity: 0.8;">Suivez-nous pour ne rater aucune mise à jour et rejoindre nos événements !</p>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            &copy; 2026 AgriFarm. Tous droits réservés.
+        </div>
+    </div>
+</footer>
+
+
+
+</body>
+</html>

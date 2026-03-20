@@ -1,0 +1,446 @@
+<script src="anti-devtools.js"></script>
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriFarm | Administration Totale</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { 
+            --primary: #6c5ce7; --accent: #00d4ff; --dark: #1e272e; 
+            --admin-red: #e74c3c; --card-bg: #3d3d3d; --edit: #f39c12; 
+            --top-gold: #f1c40f; --log-bg: #121212;
+            --timer-blue: #0084ff;
+            --success: #2ecc71;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: #2d3436; color: white; display: flex; min-height: 100vh; }
+        
+        /* SIDEBAR */
+        .sidebar { width: 260px; background: #1e272e; border-right: 2px solid var(--admin-red); padding: 20px; position: fixed; height: 100vh; z-index: 100; display: flex; flex-direction: column; }
+        .sidebar h2 { color: var(--admin-red); text-align: center; margin-bottom: 30px; text-transform: uppercase; font-size: 1.2rem; }
+        .nav-admin { list-style: none; flex-grow: 1; }
+        .nav-admin a { text-decoration: none; color: #ccc; display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 8px; transition: 0.3s; margin-bottom: 5px; font-size: 0.9rem; }
+        .nav-admin a:hover { background: rgba(231, 76, 60, 0.1); color: var(--admin-red); }
+        .btn-logout { background: #c0392b; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: auto; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+        /* MAIN CONTENT */
+        .main-content { flex: 1; padding: 40px; margin-left: 260px; }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 25px; }
+        .admin-card { background: var(--card-bg); padding: 25px; border-radius: 15px; border-top: 4px solid var(--admin-red); margin-bottom: 20px; }
+        
+        h3 { margin-bottom: 20px; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; color: var(--accent); }
+        input, select, textarea { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #444; background: #2d3436; color: white; outline: none; }
+        
+        .btn-action { background: var(--admin-red); color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; cursor: pointer; font-weight: 700; transition: 0.3s; margin-top: 5px; }
+        .btn-action:hover { filter: brightness(1.2); transform: translateY(-2px); }
+
+        /* LISTES */
+        .preview-list { margin-top: 15px; background: #1a1a1a; border-radius: 10px; padding: 10px; max-height: 200px; overflow-y: auto; border: 1px solid #444; }
+        .preview-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #333; font-size: 0.85rem; }
+        .controls { display: flex; gap: 15px; }
+        .fa-edit { color: var(--edit); cursor: pointer; }
+        .fa-trash { color: var(--admin-red); cursor: pointer; }
+
+        .edit-mode-indicator { display: none; background: var(--edit); color: black; padding: 5px 10px; border-radius: 5px; font-weight: 800; font-size: 0.7rem; margin-bottom: 10px; text-align: center; }
+
+        .log-container { background: var(--log-bg); border-radius: 10px; overflow: hidden; font-size: 0.75rem; border: 1px solid #444; margin-top: 20px; }
+        .log-table { width: 100%; border-collapse: collapse; }
+        .log-table th { background: #222; padding: 10px; text-align: left; color: #888; }
+        .log-table td { padding: 10px; border-bottom: 1px solid #222; }
+        .log-tag { padding: 2px 6px; border-radius: 4px; font-weight: bold; text-transform: uppercase; font-size: 0.6rem; }
+        .tag-delete { background: rgba(231, 76, 60, 0.2); color: #e74c3c; }
+        .tag-update { background: rgba(0, 212, 255, 0.2); color: #00d4ff; }
+        .tag-auth { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
+
+        /* UPLOAD STYLING */
+        .upload-container { display: flex; gap: 8px; margin-bottom: 10px; }
+        .upload-btn { background: #444; padding: 12px; border-radius: 8px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; width: 50px; border: 1px solid #555; }
+        .upload-btn:hover { background: var(--primary); }
+        
+        .local-file-selector {
+            background: #1e272e;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<div id="lock-screen" style="position: fixed; inset: 0; background: #1e272e; z-index: 10000; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 20px;">
+    <div style="background: #3d3d3d; padding: 40px; border-radius: 15px; border-top: 5px solid #e74c3c; text-align: center; width: 350px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        <i class="fas fa-lock" style="font-size: 3rem; color: #e74c3c; margin-bottom: 20px;"></i>
+        <h2 style="color: white; margin-bottom: 20px; font-size: 1.2rem;">ADMINISTRATION</h2>
+        <input type="password" id="adminPass" placeholder="Mot de passe" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #444; background: #2d3436; color: white; outline: none; margin-bottom: 15px;">
+        <button id="accessBtn" style="background: #e74c3c; color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; cursor: pointer; font-weight: 700;">ACCÉDER</button>
+        <p id="errorMsg" style="color: #ff7675; font-size: 0.8rem; margin-top: 15px; display: none;">Mot de passe incorrect</p>
+    </div>
+</div>
+
+<body>
+    <div class="sidebar">
+        <h2>AgriFarm Panel</h2>
+        <ul class="nav-admin">
+            <li><a href="#section-map"><i class="fas fa-map"></i> Map Progression</a></li>
+            <li><a href="#section-news"><i class="fas fa-newspaper"></i> Annonces</a></li>
+            <li><a href="#section-server"><i class="fas fa-broadcast-tower"></i> Gestion Serveur</a></li>
+            <li><a href="#section-topmods"><i class="fas fa-star"></i> Gestion TOP MODS</a></li>
+            <li><a href="#section-mods"><i class="fas fa-tools"></i> Gestion Mods</a></li>
+            <li><a href="#section-tuto"><i class="fas fa-video"></i> Gestion Tutos</a></li>
+            <li><a href="#section-logs"><i class="fas fa-history"></i> Journal Logs</a></li>
+        </ul>
+        <button class="btn-logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</button>
+    </div>
+
+    <div class="main-content">
+        <h1>Console d'Administration</h1>
+        <div class="dashboard-grid">
+            
+            <div id="section-map" class="admin-card">
+                <h3><i class="fas fa-percentage"></i> Progression de la Map</h3>
+                <input type="number" id="mapProgress" placeholder="Pourcentage %">
+                <button class="btn-action" onclick="updateMap()">Mettre à jour</button>
+            </div>
+
+            <div id="section-news" class="admin-card">
+                <h3><i class="fas fa-bullhorn"></i> Annonces</h3>
+                <div id="editNewsIndicator" class="edit-mode-indicator">🔨 MODE ÉDITION ACTIF</div>
+                <input type="text" id="newsTitle" placeholder="Titre">
+                <textarea id="newsContent" rows="2" placeholder="Message..."></textarea>
+                <div style="display: flex; gap: 10px;">
+                    <button id="newsBtn" class="btn-action" onclick="addNews()">Ajouter</button>
+                    <button id="cancelNewsBtn" class="btn-action" style="background: #555; display:none;" onclick="resetNewsForm()">Annuler</button>
+                </div>
+                <div class="preview-list" id="listAnnonces"></div>
+            </div>
+
+            <div id="section-server" class="admin-card" style="grid-column: span 2;">
+                <h3><i class="fas fa-broadcast-tower"></i> Serveur Event</h3>
+                <div id="editServerIndicator" class="edit-mode-indicator">🔨 MODE ÉDITION ACTIF</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <input type="text" id="evNom" placeholder="Nom de l'évent">
+                    <input type="text" id="evMap" placeholder="Map">
+                    <input type="text" id="evSlots" placeholder="Slots (Ex: 10/20)">
+                    <input type="text" id="evIP" placeholder="Adresse IP">
+                    <select id="evStatut"><option value="Ouvert">Ouvert</option><option value="Fermé">Fermé</option></select>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button id="serverBtn" class="btn-action" onclick="updateServerEvent()">💾 Sauvegarder Serveur</button>
+                    <button id="cancelServerBtn" class="btn-action" style="background: #555; display:none;" onclick="resetServerForm()">Annuler</button>
+                </div>
+                <div class="preview-list" id="listServers"></div>
+            </div>
+
+            <div id="section-topmods" class="admin-card" style="grid-column: span 2;">
+                <h3><i class="fas fa-star"></i> Top Mods</h3>
+                <div id="editTopIndicator" class="edit-mode-indicator">🔨 MODE ÉDITION ACTIF</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <input type="text" id="topTitle" placeholder="Titre">
+                    
+                    <div class="upload-container" style="flex-direction: column; gap: 5px;">
+                        <div style="display: flex; gap: 8px; width: 100%;">
+                            <input type="text" id="topImage" placeholder="Lien image" style="margin-bottom:0;">
+                            <label class="upload-btn" for="topImgInput"><i class="fas fa-paperclip"></i></label>
+                            <input type="file" id="topImgInput" accept="image/*" style="display:none;" onchange="uploadToStorage(this, 'topImage')">
+                        </div>
+                        <select class="local-file-selector" onchange="document.getElementById('topImage').value = this.value">
+                            <option value="">-- Choisir image du site --</option>
+                            <option value="img/image_7f3140.png">image_7f3140.png</option>
+                            <option value="img/image_7f30e8.png">image_7f30e8.png</option>
+                            <option value="img/image_7f2d22.jpg">image_7f2d22.jpg</option>
+                            <option value="img/image_7f1e97.png">image_7f1e97.png</option>
+                            <option value="img/image_7f1e3f.png">image_7f1e3f.png</option>
+                        </select>
+                    </div>
+
+                    <input type="text" id="topLink" placeholder="Lien téléchargement">
+                    <input type="number" id="topVotes" placeholder="Votes">
+                    <input type="text" id="topTag" placeholder="Tag (ex: Tracteur, Map...)">
+                    <input type="text" id="topBadge" placeholder="Badge (ex: NEW, POPULAIRE...)">
+                    <textarea id="topDesc" rows="2" placeholder="Description du mod..." style="grid-column: span 2;"></textarea>
+                </div>
+                <p id="topImageStatus" style="font-size:0.7rem; color:var(--accent); margin-top:-5px; margin-bottom:10px; display:none;">Téléchargement...</p>
+                <div style="display: flex; gap: 10px;">
+                    <button id="topBtn" class="btn-action" onclick="submitTopMod()">Publier Top Mod</button>
+                    <button id="cancelTopBtn" class="btn-action" style="background:#555; display:none;" onclick="resetTopForm()">Annuler</button>
+                </div>
+                <div class="preview-list" id="listTopMods"></div>
+            </div>
+
+            <div id="section-mods" class="admin-card" style="grid-column: span 2;">
+                <h3><i class="fas fa-box-open"></i> ModHub</h3>
+                <div id="editModIndicator" class="edit-mode-indicator">🔨 MODE ÉDITION ACTIF</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <input type="text" id="modName" placeholder="Nom du mod">
+                    <div class="upload-container" style="flex-direction: column; gap: 5px;">
+                        <div style="display: flex; gap: 8px; width: 100%;">
+                            <input type="text" id="modImage" placeholder="Lien image" style="margin-bottom:0;">
+                            <label class="upload-btn" for="modImgInput"><i class="fas fa-paperclip"></i></label>
+                            <input type="file" id="modImgInput" accept="image/*" style="display:none;" onchange="uploadToStorage(this, 'modImage')">
+                        </div>
+                        <select class="local-file-selector" onchange="document.getElementById('modImage').value = this.value">
+                            <option value="">-- Choisir image du site --</option>
+                            <option value="img/image_7f3140.png">image_7f3140.png</option>
+                            <option value="img/image_7f30e8.png">image_7f30e8.png</option>
+                            <option value="img/image_7f2d22.jpg">image_7f2d22.jpg</option>
+                            <option value="img/image_7f1e97.png">image_7f1e97.png</option>
+                            <option value="img/image_7f1e3f.png">image_7f1e3f.png</option>
+                        </select>
+                    </div>
+                    <input type="text" id="modAuthor" placeholder="Moddeur">
+                    <input type="text" id="modLink" placeholder="Lien download">
+                    <input type="text" id="modSize" placeholder="Taille">
+                    <select id="modTag"><option value="Tracteur">Tracteur</option><option value="Outil">Outil</option><option value="Pack">Pack / Map</option></select>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button id="modBtn" class="btn-action" onclick="submitMod()">Publier au ModHub</button>
+                    <button id="cancelModBtn" class="btn-action" style="background:#555; display:none;" onclick="resetModForm()">Annuler</button>
+                </div>
+                <div class="preview-list" id="listMods"></div>
+            </div>
+
+            <div id="section-tuto" class="admin-card" style="grid-column: span 2;">
+                <h3><i class="fas fa-video"></i> Tutoriels</h3>
+                <div id="editTutoIndicator" class="edit-mode-indicator">🔨 MODE ÉDITION ACTIF</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <input type="text" id="tutoTitle" placeholder="Titre">
+                    <input type="text" id="tutoYoutube" placeholder="ID YouTube">
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button id="tutoBtn" class="btn-action" onclick="submitTuto()">Publier Tuto</button>
+                    <button id="cancelTutoBtn" class="btn-action" style="background:#555; display:none;" onclick="resetTutoForm()">Annuler</button>
+                </div>
+                <div class="preview-list" id="listTutos"></div>
+            </div>
+
+            <div id="section-logs" class="admin-card" style="grid-column: span 2;">
+                <h3><i class="fas fa-history"></i> Journal Logs</h3>
+                <div class="log-container">
+                    <table class="log-table">
+                        <thead><tr><th>Date</th><th>IP</th><th>Action</th><th>Détails</th></tr></thead>
+                        <tbody id="logTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, set, push, onValue, remove, update, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBicaVWNfj5-oST8SJliCZNsBB96boFiCQ",
+            authDomain: "agrifarm-89233.firebaseapp.com",
+            databaseURL: "https://agrifarm-89233-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "agrifarm-89233",
+            storageBucket: "agrifarm-89233.firebasedatabase.app",
+            messagingSenderId: "292956001212",
+            appId: "1:292956001212:web:cae1c04e35b50a2a5c51b9"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const storage = getStorage(app);
+
+        const SECRET_KEY = "AgriFarm2026site";
+
+        // --- LOGS SYSTEM ---
+        const logAction = async (act, det) => {
+            try {
+                const res = await fetch('https://api.ipify.org?format=json');
+                const data = await res.json();
+                push(ref(db, 'logs'), { 
+                    date: new Date().toLocaleString(), 
+                    ip: data.ip, 
+                    action: act, 
+                    details: det 
+                });
+            } catch(e) { console.log("Log error"); }
+        };
+
+        // --- AUTHENTICATION ---
+        window.checkAccess = async () => {
+            const input = document.getElementById('adminPass').value;
+            if(input === SECRET_KEY) {
+                document.getElementById('lock-screen').style.display = 'none';
+                sessionStorage.setItem('isAgriAdmin', 'true');
+                await logAction("CONNEXION", "Accès au panneau admin");
+            } else {
+                document.getElementById('errorMsg').style.display = 'block';
+                document.getElementById('adminPass').value = "";
+            }
+        };
+
+        window.logout = async () => {
+            await logAction("DÉCONNEXION", "Sortie manuelle");
+            sessionStorage.removeItem('isAgriAdmin');
+            location.reload();
+        };
+
+        document.getElementById('accessBtn').onclick = window.checkAccess;
+        document.getElementById('logoutBtn').onclick = window.logout;
+
+        // Détection fermeture onglet
+        window.addEventListener('beforeunload', () => {
+            if(sessionStorage.getItem('isAgriAdmin') === 'true') {
+                logAction("DÉCONNEXION", "Fermeture session/page");
+            }
+        });
+
+        window.onload = () => {
+            if(sessionStorage.getItem('isAgriAdmin') === 'true') {
+                document.getElementById('lock-screen').style.display = 'none';
+            }
+        };
+
+        // --- UPLOAD STORAGE ---
+        window.uploadToStorage = async (input, targetId) => {
+            const file = input.files[0];
+            if(!file) return;
+            const status = document.getElementById('topImageStatus');
+            if(status) {
+                status.style.display = "block";
+                status.innerText = "⏳ Upload en cours...";
+            }
+
+            try {
+                const storageRef = sRef(storage, 'uploads/' + Date.now() + "_" + file.name);
+                await uploadBytes(storageRef, file);
+                const url = await getDownloadURL(storageRef);
+                document.getElementById(targetId).value = url;
+                if(status) {
+                    status.innerText = "✅ Image importée avec succès !";
+                    setTimeout(() => status.style.display = "none", 3000);
+                }
+            } catch (e) {
+                if(status) status.innerText = "❌ Erreur d'upload";
+                console.error(e);
+            }
+        };
+
+        // --- RENDER LOGS ---
+        onValue(query(ref(db, 'logs'), limitToLast(30)), (s) => {
+            const b = document.getElementById('logTableBody'); b.innerHTML = "";
+            const d = s.val(); if(d) Object.keys(d).reverse().forEach(k => {
+                const l = d[k]; 
+                let cl = "tag-update";
+                if(l.action.includes("SUPPR")) cl = "tag-delete";
+                if(l.action.includes("CONNEXION") || l.action.includes("DÉCONNEXION")) cl = "tag-auth";
+                
+                b.innerHTML += `<tr><td>${l.date}</td><td>${l.ip}</td><td><span class="log-tag ${cl}">${l.action}</span></td><td>${l.details}</td></tr>`;
+            });
+        });
+
+        // --- GLOBAL ACTIONS ---
+        window.deleteData = (path, name) => { if(confirm("Supprimer "+name+" ?")) { logAction("SUPPR", path); remove(ref(db, path)); } };
+        window.updateMap = () => { const v = document.getElementById('mapProgress').value; set(ref(db, 'progression'), {percent: v}); logAction("MAJ MAP", v+"%"); };
+
+        // --- 1. ANNONCES ---
+        let editNewsKey = null;
+        window.addNews = () => {
+            const data = { title: document.getElementById('newsTitle').value, content: document.getElementById('newsContent').value };
+            if(editNewsKey) { update(ref(db, 'annonces/'+editNewsKey), data).then(resetNewsForm); logAction("EDIT NEWS", data.title); }
+            else { push(ref(db, 'annonces'), data).then(resetNewsForm); logAction("AJOUT NEWS", data.title); }
+        };
+        onValue(ref(db, 'annonces'), (s) => {
+            const l = document.getElementById('listAnnonces'); l.innerHTML = "";
+            const d = s.val(); if(d) Object.keys(d).forEach(k => {
+                l.innerHTML += `<div class="preview-item"><span>${d[k].title}</span><div class="controls"><i class="fas fa-edit" onclick="prepareNews('${k}', ${JSON.stringify(d[k]).replace(/"/g, '&quot;')})"></i><i class="fas fa-trash" onclick="deleteData('annonces/${k}', '${d[k].title}')"></i></div></div>`;
+            });
+        });
+        window.prepareNews = (k, d) => { editNewsKey = k; document.getElementById('newsTitle').value = d.title; document.getElementById('newsContent').value = d.content; document.getElementById('newsBtn').innerText = "Enregistrer"; document.getElementById('cancelNewsBtn').style.display = "block"; document.getElementById('editNewsIndicator').style.display = "block"; };
+        window.resetNewsForm = () => { editNewsKey = null; document.getElementById('newsTitle').value = ""; document.getElementById('newsContent').value = ""; document.getElementById('newsBtn').innerText = "Ajouter"; document.getElementById('cancelNewsBtn').style.display = "none"; document.getElementById('editNewsIndicator').style.display = "none"; };
+
+        // --- 2. SERVEUR ---
+        let editServerKey = null;
+        window.updateServerEvent = () => {
+            const data = { nom: document.getElementById('evNom').value, map: document.getElementById('evMap').value, slots: document.getElementById('evSlots').value, ip: document.getElementById('evIP').value, statut: document.getElementById('evStatut').value };
+            if(editServerKey) { update(ref(db, 'serverEventList/'+editServerKey), data).then(resetServerForm); logAction("EDIT SERVEUR", data.nom); }
+            else { push(ref(db, 'serverEventList'), data).then(resetServerForm); logAction("AJOUT SERVEUR", data.nom); }
+            set(ref(db, 'serverEvent'), data);
+        };
+        onValue(ref(db, 'serverEventList'), (s) => {
+            const l = document.getElementById('listServers'); l.innerHTML = "";
+            const d = s.val(); if(d) Object.keys(d).forEach(k => {
+                l.innerHTML += `<div class="preview-item"><span>${d[k].nom}</span><div class="controls"><i class="fas fa-edit" onclick="prepareServer('${k}', ${JSON.stringify(d[k]).replace(/"/g, '&quot;')})"></i><i class="fas fa-trash" onclick="deleteData('serverEventList/${k}', '${d[k].nom}')"></i></div></div>`;
+            });
+        });
+        window.prepareServer = (k, d) => { editServerKey = k; document.getElementById('evNom').value = d.nom; document.getElementById('evMap').value = d.map; document.getElementById('evSlots').value = d.slots; document.getElementById('evIP').value = d.ip; document.getElementById('evStatut').value = d.statut; document.getElementById('serverBtn').innerText = "Sauvegarder"; document.getElementById('cancelServerBtn').style.display = "block"; document.getElementById('editServerIndicator').style.display = "block"; };
+        window.resetServerForm = () => { editServerKey = null; document.querySelectorAll('#section-server input').forEach(i => i.value=""); document.getElementById('serverBtn').innerText = "💾 Sauvegarder"; document.getElementById('cancelServerBtn').style.display = "none"; document.getElementById('editServerIndicator').style.display = "none"; };
+
+        // --- 3. TOP MODS ---
+        let editTopKey = null;
+        window.submitTopMod = () => {
+            const data = { 
+                title: document.getElementById('topTitle').value, 
+                image: document.getElementById('topImage').value, 
+                link: document.getElementById('topLink').value, 
+                votes: document.getElementById('topVotes').value,
+                tag: document.getElementById('topTag').value,
+                badge: document.getElementById('topBadge').value,
+                desc: document.getElementById('topDesc').value
+            };
+            if(editTopKey) { update(ref(db, 'topMods/'+editTopKey), data).then(resetTopForm); logAction("EDIT TOP", data.title); }
+            else { push(ref(db, 'topMods'), data).then(resetTopForm); logAction("AJOUT TOP", data.title); }
+        };
+        onValue(ref(db, 'topMods'), (s) => {
+            const l = document.getElementById('listTopMods'); l.innerHTML = "";
+            const d = s.val(); if(d) Object.keys(d).forEach(k => {
+                l.innerHTML += `<div class="preview-item"><span>${d[k].title}</span><div class="controls"><i class="fas fa-edit" onclick="prepareTop('${k}', ${JSON.stringify(d[k]).replace(/"/g, '&quot;')})"></i><i class="fas fa-trash" onclick="deleteData('topMods/${k}', '${d[k].title}')"></i></div></div>`;
+            });
+        });
+        window.prepareTop = (k, d) => { 
+            editTopKey = k; 
+            document.getElementById('topTitle').value = d.title; 
+            document.getElementById('topImage').value = d.image; 
+            document.getElementById('topLink').value = d.link; 
+            document.getElementById('topVotes').value = d.votes;
+            document.getElementById('topTag').value = d.tag || "";
+            document.getElementById('topBadge').value = d.badge || "";
+            document.getElementById('topDesc').value = d.desc || "";
+            document.getElementById('topBtn').innerText = "Sauvegarder"; document.getElementById('cancelTopBtn').style.display = "block"; document.getElementById('editTopIndicator').style.display = "block"; 
+        };
+        window.resetTopForm = () => { editTopKey = null; document.querySelectorAll('#section-topmods input, #section-topmods textarea').forEach(i => i.value=""); document.getElementById('topBtn').innerText = "Publier Top Mod"; document.getElementById('cancelTopBtn').style.display = "none"; document.getElementById('editTopIndicator').style.display = "none"; };
+
+        // --- 4. MODHUB ---
+        let editModKey = null;
+        window.submitMod = () => {
+            const data = { name: document.getElementById('modName').value, image: document.getElementById('modImage').value, author: document.getElementById('modAuthor').value, link: document.getElementById('modLink').value, size: document.getElementById('modSize').value, tag: document.getElementById('modTag').value };
+            if(editModKey) { update(ref(db, 'mods/'+editModKey), data).then(resetModForm); logAction("EDIT MOD", data.name); }
+            else { push(ref(db, 'mods'), data).then(resetModForm); logAction("AJOUT MOD", data.name); }
+        };
+        onValue(ref(db, 'mods'), (s) => {
+            const l = document.getElementById('listMods'); l.innerHTML = "";
+            const d = s.val(); if(d) Object.keys(d).forEach(k => {
+                l.innerHTML += `<div class="preview-item"><span>${d[k].name}</span><div class="controls"><i class="fas fa-edit" onclick="prepareMod('${k}', ${JSON.stringify(d[k]).replace(/"/g, '&quot;')})"></i><i class="fas fa-trash" onclick="deleteData('mods/${k}', '${d[k].name}')"></i></div></div>`;
+            });
+        });
+        window.prepareMod = (k, d) => { editModKey = k; document.getElementById('modName').value = d.name; document.getElementById('modImage').value = d.image; document.getElementById('modAuthor').value = d.author; document.getElementById('modLink').value = d.link; document.getElementById('modSize').value = d.size; document.getElementById('modTag').value = d.tag; document.getElementById('modBtn').innerText = "Sauvegarder"; document.getElementById('cancelModBtn').style.display = "block"; document.getElementById('editModIndicator').style.display = "block"; };
+        window.resetModForm = () => { editModKey = null; document.querySelectorAll('#section-mods input').forEach(i => i.value=""); document.getElementById('modBtn').innerText = "Publier au ModHub"; document.getElementById('cancelModBtn').style.display = "none"; document.getElementById('editModIndicator').style.display = "none"; };
+
+        // --- 5. TUTOS ---
+        let editTutoKey = null;
+        window.submitTuto = () => {
+            const data = { title: document.getElementById('tutoTitle').value, youtube: document.getElementById('tutoYoutube').value };
+            if(editTutoKey) { update(ref(db, 'tutos/'+editTutoKey), data).then(resetTutoForm); logAction("EDIT TUTO", data.title); }
+            else { push(ref(db, 'tutos'), data).then(resetTutoForm); logAction("AJOUT TUTO", data.title); }
+        };
+        onValue(ref(db, 'tutos'), (s) => {
+            const l = document.getElementById('listTutos'); l.innerHTML = "";
+            const d = s.val(); if(d) Object.keys(d).forEach(k => {
+                l.innerHTML += `<div class="preview-item"><span>${d[k].title}</span><div class="controls"><i class="fas fa-edit" onclick="prepareTuto('${k}', ${JSON.stringify(d[k]).replace(/"/g, '&quot;')})"></i><i class="fas fa-trash" onclick="deleteData('tutos/${k}', '${d[k].title}')"></i></div></div>`;
+            });
+        });
+        window.prepareTuto = (k, d) => { editTutoKey = k; document.getElementById('tutoTitle').value = d.title; document.getElementById('tutoYoutube').value = d.youtube; document.getElementById('tutoBtn').innerText = "Sauvegarder"; document.getElementById('cancelTutoBtn').style.display = "block"; document.getElementById('editTutoIndicator').style.display = "block"; };
+        window.resetTutoForm = () => { editTutoKey = null; document.getElementById('tutoTitle').value = ""; document.getElementById('tutoYoutube').value = ""; document.getElementById('tutoBtn').innerText = "Publier Tuto"; document.getElementById('cancelTutoBtn').style.display = "none"; document.getElementById('editTutoIndicator').style.display = "none"; };
+
+    </script>
+</body>
+</html>
