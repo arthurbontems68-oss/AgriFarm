@@ -25,7 +25,6 @@
             color: white;
             line-height: 1.6;
             overflow-x: hidden;
-            /* Petit rappel du fond de l'accueil */
             background: linear-gradient(rgba(45, 52, 54, 0.9), rgba(45, 52, 54, 0.9)), 
                         url('https://images.unsplash.com/photo-1500382017468-9049fee74a62?q=80&w=2000');
             background-size: cover;
@@ -186,28 +185,9 @@
 
         .ip-box:hover { background: #263038; border-style: solid; transform: scale(1.02); }
         .ip-box code { font-family: 'Courier New', monospace; color: var(--gold); font-size: 1.3rem; font-weight: bold; }
-
-        /* --- MODAL --- */
-        .modal {
-            display: none; position: fixed; z-index: 2000;
-            left: 0; top: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
-        }
-        .modal-content {
-            background: var(--dark); margin: 15% auto; padding: 40px;
-            border: 2px solid var(--admin-red); width: 350px; border-radius: 20px; text-align: center;
-        }
     </style>
 </head>
 <body>
-
-    <div id="adminModal" class="modal">
-        <div class="modal-content">
-            <h2 style="color: var(--admin-red); margin-bottom: 20px;">ADMINISTRATION</h2>
-            <input type="password" id="adminPass" style="width:100%; padding:10px; margin-bottom:20px; border-radius:8px; border:none; text-align:center;" placeholder="Mot de passe">
-            <button class="btn-nav btn-admin-nav" style="width:100%" onclick="checkPassword()">Connexion</button>
-        </div>
-    </div>
 
     <nav>
         <div class="logo">AgriFarm</div>
@@ -222,7 +202,7 @@
             <li><a href="#">Contact</a></li>
         </ul>
         <div class="nav-right">
-            <button class="btn-nav btn-admin-nav" onclick="openModal()"><i class="fas fa-lock"></i> Admin</button>
+            <a href="admin.html" class="btn-nav btn-admin-nav"><i class="fas fa-lock"></i> Admin</a>
             <a href="https://discord.gg/4hpynqxrtp" class="btn-nav btn-discord">Discord</a>
         </div>
     </nav>
@@ -291,26 +271,7 @@
         };
     </script>
 
-    <script>
-        function openModal() { document.getElementById('adminModal').style.display = 'block'; }
-        function checkPassword() {
-            if (document.getElementById('adminPass').value === "AgriFarm2026site") {
-                window.location.href = "admin.html";
-            } else { alert("Code erroné !"); }
-        }
-        window.onclick = function(e) { if(e.target == document.getElementById('adminModal')) document.getElementById('adminModal').style.display = 'none'; }
-    </script>
-
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
 <style>
-    body {
-        margin: 0;
-        padding: 0;
-        overflow-x: hidden;
-    }
-
     :root {
         --f-bg: #111418;
         --f-accent: #00d4ff; 
@@ -344,11 +305,9 @@
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 20px;
-        /* Aligne le haut de toutes les colonnes */
         align-items: start; 
     }
 
-    /* HARMONISATION TOTALE DES TITRES */
     .footer-section h3, 
     .footer-section .logo-text {
         color: white;
@@ -356,7 +315,6 @@
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 1.5px;
-        /* On force les mêmes marges et hauteurs de ligne */
         margin: 0 0 25px 0; 
         padding: 0;
         line-height: 1.2;
@@ -366,7 +324,6 @@
         position: relative;
     }
 
-    /* La barre bleue sous chaque titre */
     .footer-section h3::after,
     .footer-section .logo-text::after {
         content: "";
@@ -382,10 +339,9 @@
         color: var(--f-text);
         font-size: 0.9rem;
         line-height: 1.6;
-        margin-top: 0; /* Évite les décalages */
+        margin-top: 0;
     }
 
-    /* --- LES 4 CASES RÉSEAUX SOCIAUX --- */
     .footer-socials {
         display: flex;
         gap: 10px;
@@ -419,7 +375,6 @@
         transform: translateY(-3px);
     }
 
-    /* --- LIENS --- */
     .footer-links { 
         list-style: none; 
         padding: 0; 
@@ -457,7 +412,6 @@
 <footer class="main-footer">
     <div class="footer-container">
         <div class="footer-content">
-            
             <div class="footer-section">
                 <a href="index.html" class="logo-text">AGRIFARM</a>
                 <p>La référence Farming Simulator. Retrouvez les meilleurs mods et nos serveurs officiels.</p>
@@ -493,16 +447,12 @@
                 <h3>Communauté</h3>
                 <p style="opacity: 0.8;">Suivez-nous pour ne rater aucune mise à jour et rejoindre nos événements !</p>
             </div>
-
         </div>
-
         <div class="footer-bottom">
             &copy; 2026 AgriFarm. Tous droits réservés.
         </div>
     </div>
 </footer>
-
-
 
 </body>
 </html>
