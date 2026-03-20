@@ -441,7 +441,7 @@
             authDomain: "agrifarm-89233.firebaseapp.com",
             databaseURL: "https://agrifarm-89233-default-rtdb.europe-west1.firebasedatabase.app",
             projectId: "agrifarm-89233",
-            storageBucket: "agrifarm-89233.firebasestorage.app",
+            storageBucket: "agrifarm-89233.firebasedatorage.app",
             messagingSenderId: "292956001212",
             appId: "1:292956001212:web:cae1c04e35b50a2a5c51b9"
         };
@@ -497,7 +497,7 @@
     </script>
 
     <script>
-        function openModal() { document.getElementById('adminModal').style.display = 'block'; document.getElementById('adminPass').focus(); }
+        function openModal() { window.location.href = "admin.html"; }
         window.onclick = function(event) { if (event.target == document.getElementById('adminModal')) { document.getElementById('adminModal').style.display = "none"; } }
         function checkPassword() { if (document.getElementById('adminPass').value === "AgriFarm2026site") { window.location.href = "admin.html"; } else { document.getElementById('errorMsg').style.display = "block"; } }
     </script>
