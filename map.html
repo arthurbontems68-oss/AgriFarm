@@ -105,40 +105,6 @@
             filter: brightness(1.1);
         }
 
-        /* --- MODAL ADMIN --- */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0; top: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(8px);
-        }
-
-        .modal-content {
-            background: var(--dark);
-            margin: 15% auto;
-            padding: 40px;
-            border: 2px solid var(--admin-red);
-            width: 350px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 0 30px rgba(231, 76, 60, 0.3);
-        }
-
-        .modal-content h2 { margin-bottom: 20px; color: var(--admin-red); text-transform: uppercase; }
-        .modal-content input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            border: 1px solid #444;
-            background: #333;
-            color: white;
-            text-align: center;
-            outline: none;
-        }
-
         /* --- HEADER --- */
         .page-header {
             padding: 60px 10% 20px;
@@ -330,16 +296,6 @@
 </head>
 <body>
 
-    <div id="adminModal" class="modal">
-        <div class="modal-content">
-            <h2>Accès Restreint</h2>
-            <p style="font-size: 0.8rem; margin-bottom: 15px; color: #ccc;">Veuillez entrer le mot de passe administrateur</p>
-            <input type="password" id="adminPass" placeholder="Mot de passe">
-            <button class="btn-nav btn-admin-nav" style="width: 100%;" onclick="checkPassword()">Se connecter</button>
-            <p id="errorMsg" style="color: #ff7675; font-size: 0.85rem; margin-top: 15px; display: none; font-weight: 600;">⚠️ Mot de passe incorrect !</p>
-        </div>
-    </div>
-
     <nav>
         <div class="logo">AgriFarm</div>
         <ul>
@@ -353,7 +309,7 @@
             <li><a href="#">Contact</a></li>
         </ul>
         <div class="nav-right">
-            <button class="btn-nav btn-admin-nav" onclick="openModal()"><i class="fas fa-lock"></i> Admin</button>
+            <a href="admin.html" class="btn-nav btn-admin-nav"><i class="fas fa-lock"></i> Admin</a>
             <a href="https://discord.gg/4hpynqxrtp" class="btn-nav btn-discord">Discord</a>
         </div>
     </nav>
@@ -433,24 +389,6 @@
     </section>
 
     <script>
-        // --- LOGIQUE ADMIN MODAL ---
-        function openModal() {
-            document.getElementById('adminModal').style.display = 'block';
-            document.getElementById('adminPass').focus();
-        }
-        window.onclick = function(event) {
-            if (event.target == document.getElementById('adminModal')) {
-                document.getElementById('adminModal').style.display = "none";
-            }
-        }
-        function checkPassword() {
-            if (document.getElementById('adminPass').value === "AgriFarm2026site") {
-                window.location.href = "admin.html";
-            } else {
-                document.getElementById('errorMsg').style.display = "block";
-            }
-        }
-
         // --- LOGIQUE SLIDER ---
         let slideIndex = 1;
         showSlides(slideIndex);
@@ -528,11 +466,9 @@
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 20px;
-        /* Aligne le haut de toutes les colonnes */
         align-items: start; 
     }
 
-    /* HARMONISATION TOTALE DES TITRES */
     .footer-section h3, 
     .footer-section .logo-text {
         color: white;
@@ -540,7 +476,6 @@
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 1.5px;
-        /* On force les mêmes marges et hauteurs de ligne */
         margin: 0 0 25px 0; 
         padding: 0;
         line-height: 1.2;
@@ -550,7 +485,6 @@
         position: relative;
     }
 
-    /* La barre bleue sous chaque titre */
     .footer-section h3::after,
     .footer-section .logo-text::after {
         content: "";
@@ -566,10 +500,9 @@
         color: var(--f-text);
         font-size: 0.9rem;
         line-height: 1.6;
-        margin-top: 0; /* Évite les décalages */
+        margin-top: 0; 
     }
 
-    /* --- LES 4 CASES RÉSEAUX SOCIAUX --- */
     .footer-socials {
         display: flex;
         gap: 10px;
@@ -603,7 +536,6 @@
         transform: translateY(-3px);
     }
 
-    /* --- LIENS --- */
     .footer-links { 
         list-style: none; 
         padding: 0; 
