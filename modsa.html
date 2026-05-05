@@ -104,19 +104,7 @@
             flex: 1;
         }
 
-        .empty-msg {
-            grid-column: 1 / -1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            min-height: 200px;
-            color: #888;
-            font-size: 1.1rem;
-            font-style: italic;
-        }
-
-        /* --- CADRES DESIGN --- */
+        /* --- DESIGN DES CARTES --- */
         .mod-card {
             background: var(--card-bg);
             border-radius: 20px;
@@ -138,7 +126,6 @@
         .mod-img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
         .mod-card:hover .mod-img { transform: scale(1.1); }
 
-        /* Effet de reflet pro sur l'image */
         .image-box::after {
             content: "";
             position: absolute;
@@ -188,12 +175,6 @@
         }
 
         .btn-dl:hover { filter: brightness(1.2); letter-spacing: 0.5px; }
-
-        @media (max-width: 1024px) {
-            nav { flex-direction: column; padding: 20px; }
-            nav ul { margin-top: 15px; flex-wrap: wrap; justify-content: center; }
-            .nav-right { justify-content: center; margin-top: 15px; }
-        }
 
         /* --- STYLE FOOTER --- */
         :root {
@@ -281,13 +262,6 @@
             border-top: 1px solid rgba(255, 255, 255, 0.05);
             text-align: center; color: #636e72; font-size: 0.85rem;
         }
-
-        @media (max-width: 900px) { .footer-content { grid-template-columns: 1fr 1fr; } }
-        @media (max-width: 600px) { 
-            .footer-content { grid-template-columns: 1fr; text-align: center; } 
-            .footer-section h3::after, .footer-section .logo-text::after { left: 50%; transform: translateX(-50%); } 
-            .footer-socials { justify-content: center; }
-        }
     </style>
 </head>
 <body>
@@ -319,80 +293,62 @@
 
         <section>
             <div class="modhub-grid" id="modsContainer">
-                <div class="empty-msg">Chargement du catalogue...</div>
-            </div>
+                </div>
         </section>
     </main>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    <script>
+        /* --- CONFIGURATION DES MODS ICI --- */
+        const mesMods = [
+            {
+                name: "Smur Belge ",
+                author: "MultiGame",
+                tag: "VOITURE",
+                version: "1.0",
+                size: "42MB",
+                date: "05/05/2026",
+                desc: "Smur Belge ",
+                image: "CommuFS.jpg",
+                link: "https://discord.gg/4hpynqxrtp",
+                stars: 5
+            },
+            
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBicaVWNfj5-oST8SJliCZNsBB96boFiCQ",
-            authDomain: "agrifarm-89233.firebaseapp.com",
-            databaseURL: "https://agrifarm-89233-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "agrifarm-89233",
-            storageBucket: "agrifarm-89233.firebasedatabase.app",
-            messagingSenderId: "292956001212",
-            appId: "1:292956001212:web:cae1c04e35b50a2a5c51b9"
-        };
+    
+            // Tu peux ajouter d'autres mods ici en suivant le même modèle
+        ];
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
         const container = document.getElementById('modsContainer');
 
-        // FONCTION D'AFFICHAGE (Design + Clic Image)
-        function renderMod(mod) {
-            let starsHTML = "⭐".repeat(parseInt(mod.stars || 5));
-            return `
-                <div class="mod-card">
-                    <div class="image-box" onclick="window.open('${mod.link}', '_blank')">
-                        <span class="tag-badge">${mod.tag}</span>
-                        <span class="version-badge">v${mod.version}</span>
-                        <img src="${mod.image}" class="mod-img" alt="${mod.name}">
-                    </div>
-                    <div class="mod-body">
-                        <div class="mod-stars">${starsHTML}</div>
-                        <h3 class="mod-title">${mod.name}</h3>
-                        <span class="mod-author">par ${mod.author}</span>
-                        <p class="mod-desc">${mod.desc}</p>
-                        <div class="mod-info-bar">
-                            <div class="stat-item"><i class="fas fa-file-archive"></i> ${mod.size}</div>
-                            <div class="stat-item"><i class="fas fa-calendar-alt"></i> ${mod.date}</div>
+        function loadMods() {
+            container.innerHTML = ""; 
+            mesMods.forEach(mod => {
+                let starsHTML = "⭐".repeat(mod.stars);
+                container.innerHTML += `
+                    <div class="mod-card">
+                        <div class="image-box" onclick="window.open('${mod.link}', '_blank')">
+                            <span class="tag-badge">${mod.tag}</span>
+                            <span class="version-badge">v${mod.version}</span>
+                            <img src="${mod.image}" class="mod-img" alt="${mod.name}">
                         </div>
-                        <a href="${mod.link}" target="_blank" class="btn-dl">
-                            <i class="fas fa-download"></i> TÉLÉCHARGER
-                        </a>
-                    </div>
-                </div>`;
+                        <div class="mod-body">
+                            <div class="mod-stars">${starsHTML}</div>
+                            <h3 class="mod-title">${mod.name}</h3>
+                            <span class="mod-author">par ${mod.author}</span>
+                            <p class="mod-desc">${mod.desc}</p>
+                            <div class="mod-info-bar">
+                                <div class="stat-item"><i class="fas fa-file-archive"></i> ${mod.size}</div>
+                                <div class="stat-item"><i class="fas fa-calendar-alt"></i> ${mod.date}</div>
+                            </div>
+                            <a href="${mod.link}" target="_blank" class="btn-dl">
+                                <i class="fas fa-download"></i> TÉLÉCHARGER
+                            </a>
+                        </div>
+                    </div>`;
+            });
         }
 
-        onValue(ref(db, 'mods'), (snapshot) => {
-            const data = snapshot.val();
-            container.innerHTML = ""; 
-            
-            // MOD DE TEST (Toujours visible pour tester le design)
-            const testMod = {
-                name: "Fendt 700 Vario S4",
-                author: "AgriFarm",
-                tag: "TRACTEUR",
-                version: "1.2",
-                size: "42MB",
-                date: "05/2026",
-                desc: "Ceci est un mod de test pour valider le design de tes cadres.",
-                image: "https://image.api.playstation.com/vulcan/ap/rnd/202109/1411/5uF3pQo8Z09vR19y4QpU9O0m.jpg",
-                link: "#",
-                stars: 5
-            };
-            container.innerHTML += renderMod(testMod);
-
-            if(data) {
-                Object.keys(data).reverse().forEach(key => {
-                    container.innerHTML += renderMod(data[key]);
-                });
-            }
-        });
+        loadMods();
     </script>
 
 <footer class="main-footer">
