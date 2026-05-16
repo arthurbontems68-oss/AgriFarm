@@ -1,0 +1,354 @@
+<script src="anti-devtools.js"></script>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriFarm | Détails du Mod</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --accent: #00d4ff;
+            --dark: #1e272e;
+            --light: #f5f6fa;
+            --gold: #ffc65d;
+            --card-bg: #242b2d;
+            --admin-red: #e74c3c;
+            --success: #2ecc71;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        html, body { height: 100%; }
+        body { background-color: #2d3436; color: white; line-height: 1.6; overflow-x: hidden; display: flex; flex-direction: column; }
+
+        /* --- NAVIGATION --- */
+        nav { display: flex; align-items: center; padding: 15px 5%; background: rgba(30, 39, 46, 0.95); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid var(--accent); }
+        .logo { flex: 1; font-size: 1.4rem; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; }
+        nav ul { flex: 2; display: flex; list-style: none; align-items: center; justify-content: center; }
+        nav ul li { margin: 0 12px; }
+        nav ul li a { text-decoration: none; color: white; font-weight: 600; font-size: 0.85rem; transition: 0.3s; text-transform: uppercase; }
+        nav ul li a:hover { color: var(--gold); }
+        .active { color: var(--gold) !important; }
+        .nav-right { flex: 1; display: flex; justify-content: flex-end; gap: 10px; }
+        .btn-nav { padding: 8px 18px; border-radius: 8px; font-size: 0.85rem; text-decoration: none; color: white; font-weight: 600; transition: 0.3s; border: none; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .btn-discord { background: var(--primary); }
+        .btn-admin-nav { background: var(--admin-red); }
+        .btn-nav:hover { transform: scale(1.05); filter: brightness(1.1); }
+
+        /* --- STRUCTURE PAGE --- */
+        .mod-page-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 5%;
+            flex: 1;
+        }
+
+        /* --- CADRE MOD & DIAPORAMA --- */
+        .mod-detail-container {
+            background: rgba(36, 43, 45, 0.7);
+            backdrop-filter: blur(15px);
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slider-wrapper {
+            position: relative;
+            height: 480px;
+            width: 100%;
+            overflow: hidden;
+            border-bottom: 4px solid var(--accent);
+        }
+
+        .slider-container {
+            display: flex;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.45, 0, 0.55, 1);
+        }
+
+        .slide {
+            min-width: 100%;
+            height: 100%;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            border-radius: 50%;
+            margin: 0 15px;
+            transition: 0.3s;
+            font-size: 1.2rem;
+        }
+        .slider-btn:hover { background: var(--accent); scale: 1.1; }
+        .btn-next { right: 0; }
+        .btn-prev { left: 0; }
+
+        .mod-detail-body { padding: 40px; }
+        .mod-detail-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px; }
+        .mod-detail-title { 
+            font-size: 2.6rem; font-weight: 800; color: #fff; line-height: 1.1;
+            background: linear-gradient(to right, #fff, #bdc3c7);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        
+        .mod-author-tag { color: var(--accent); font-weight: 600; font-size: 1rem; margin-top: 8px; display: flex; align-items: center; gap: 8px; }
+        .mod-badges-row { display: flex; gap: 12px; margin-bottom: 30px; flex-wrap: wrap; }
+        
+        .badge-info { 
+            background: rgba(255, 255, 255, 0.05); padding: 10px 18px; border-radius: 12px; font-size: 0.85rem; 
+            color: #efefef; display: flex; align-items: center; gap: 10px; border: 1px solid rgba(255,255,255,0.1); transition: 0.3s;
+        }
+        .badge-info:hover { background: rgba(255,255,255,0.1); border-color: var(--accent); }
+        .badge-info i { color: var(--accent); }
+
+        .mod-long-desc { 
+            color: #d1d1d1; font-size: 1.05rem; margin-bottom: 40px; white-space: pre-line; line-height: 1.8;
+            padding-left: 20px; border-left: 3px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-dl-container {
+            text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 15px; padding: 22px;
+            background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; border-radius: 16px;
+            font-weight: 700; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 10px 25px rgba(46, 204, 113, 0.3);
+        }
+
+        .btn-dl-container:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(46, 204, 113, 0.5); filter: brightness(1.1); }
+        .btn-dl-container i { font-size: 1.5rem; animation: bounce 2s infinite; }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-6px);}
+            60% {transform: translateY(-3px);}
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar-section h3 { font-size: 1.1rem; color: var(--gold); text-transform: uppercase; margin-bottom: 20px; border-left: 4px solid var(--accent); padding-left: 15px; }
+        .mini-card-side {
+            display: flex; gap: 15px; background: var(--card-bg); padding: 12px; border-radius: 15px; margin-bottom: 15px;
+            text-decoration: none; color: white; transition: 0.3s; border: 1px solid rgba(255,255,255,0.05);
+        }
+        .mini-card-side:hover { border-color: var(--accent); transform: translateX(5px); background: #2d3436; }
+        .mini-img-side { width: 100px; height: 70px; object-fit: cover; border-radius: 10px; }
+        .mini-info-side h4 { font-size: 0.85rem; margin-bottom: 4px; }
+        .mini-info-side p { font-size: 0.75rem; color: var(--accent); }
+
+        /* --- FOOTER --- */
+        .main-footer { background: #111418; width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; padding: 60px 0 40px 0; margin-top: 80px; border-top: 3px solid var(--accent); color: white; }
+        .footer-container { max-width: 1200px; margin: 0 auto; padding: 0 5%; }
+        .footer-content { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; align-items: start; }
+        .footer-section h3, .footer-section .logo-text { color: white; font-size: 1.1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 25px; position: relative; display: block; text-decoration: none; }
+        .footer-section h3::after, .footer-section .logo-text::after { content: ""; position: absolute; bottom: -8px; left: 0; width: 30px; height: 2px; background: var(--accent); }
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 12px; }
+        .footer-links a { color: #9da5af; text-decoration: none; font-size: 0.9rem; transition: 0.3s; }
+        .footer-links a:hover { color: var(--accent); padding-left: 5px; }
+        .footer-bottom { text-align: center; margin-top: 50px; color: #636e72; font-size: 0.85rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 25px; }
+
+        @media (max-width: 1024px) { .mod-page-wrapper { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">AgriFarm</div>
+        <ul>
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="map.html">Map</a></li>
+            <li><a href="team.html">Equipe</a></li>
+            <li><a href="serveur.html">Serveurs</a></li>
+            <li><a href="mods.html" class="active">Mods</a></li>
+            <li><a href="tuto.html">Tuto</a></li>
+            <li><a href="topmods.html">TopMods</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+        <div class="nav-right">
+            <a href="admin.html" class="btn-nav btn-admin-nav"><i class="fas fa-lock"></i> Admin</a>
+            <a href="https://discord.gg/4hpynqxrtp" class="btn-nav btn-discord">Discord</a>
+        </div>
+    </nav>
+
+    <main class="mod-page-wrapper">
+        <div class="mod-detail-container" id="mainModDisplay"></div>
+
+        <aside class="sidebar-section">
+            <h3>Dernières sorties</h3>
+            <div id="sideModList"></div>
+        </aside>
+    </main>
+
+    <script>
+        // ==========================================
+        // MODIFIE TES MODS CI-DESSOUS (SANS BDD)
+        // ==========================================
+        const catalogueMods = [
+            {
+                name: "volkswagen T6",
+                author: "MultiGame",
+                tag: "VOITURE",
+                version: "1.0",
+                size: "1.5 MB",
+                date: "16/05/26",
+                desc: "volkswagen T6 Police Belge \n     Bonjour,\n Je vous dl aujoud'hui un volkswagen T6 Police Belge .\n\n Modiff : Reskin + sirene belge\n\n\n  Vehicule :\n   Fonctionne avec IC\n  Prix : 123.000 €\n  Puissance : 453 cvx\n\n 🔴 DL sur des site ou autre discord\n 🟠 Reskin autorisé sur demande\n 🟢 Conversion sur d'autre fs\n\n Video de presentaion : Soon.",
+                images: [
+                    "ss.png",
+                    "ss.png",
+                    "ss.png"
+                ], 
+                link: "https://discord.com/channels/1439219537164894211/1505194391856222348",
+                stars: 5
+            },
+            {
+                name: "Ambulance Belge",
+                author: "MultiGame",
+                tag: "VOITURE",
+                version: "1.0",
+                size: "28 MB",
+                date: "Hier",
+                desc: "Véhicule utilitaire indispensable pour vos interventions rapides sur la ferme.\n\n- Finitions haute qualité\n- Plusieurs configurations moteur\n- Gyrophares fonctionnels",
+                images: [
+                    "ambu.png",
+                    "https://via.placeholder.com/800x450/444"
+                ],
+                link: "#",
+                stars: 5
+            }
+        ];
+
+        let currentSlide = 0;
+
+        function showMod(index) {
+            const m = catalogueMods[index];
+            const display = document.getElementById('mainModDisplay');
+            currentSlide = 0; 
+            
+            const slidesHtml = m.images.map(img => `<div class="slide"><img src="${img}"></div>`).join('');
+
+            display.innerHTML = `
+                <div class="slider-wrapper">
+                    <button class="slider-btn btn-prev" onclick="moveSlide(-1)"><i class="fas fa-chevron-left"></i></button>
+                    <div class="slider-container" id="sliderObj">
+                        ${slidesHtml}
+                    </div>
+                    <button class="slider-btn btn-next" onclick="moveSlide(1)"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="mod-detail-body">
+                    <div class="mod-detail-header">
+                        <div>
+                            <h1 class="mod-detail-title">${m.name}</h1>
+                            <span class="mod-author-tag"><i class="fas fa-user-circle"></i> par ${m.author}</span>
+                        </div>
+                        <div style="background: rgba(0,0,0,0.2); padding: 10px 15px; border-radius: 12px; border: 1px solid var(--gold);">
+                            <span style="color: var(--gold); font-size: 1.2rem;">${"⭐".repeat(m.stars)}</span>
+                        </div>
+                    </div>
+
+                    <div class="mod-badges-row">
+                        <div class="badge-info"><i class="fas fa-clock"></i> ${m.date}</div>
+                        <div class="badge-info"><i class="fas fa-code-branch"></i> v${m.version}</div>
+                        <div class="badge-info"><i class="fas fa-file-archive"></i> ${m.size}</div>
+                        <div class="badge-info"><i class="fas fa-tag"></i> ${m.tag}</div>
+                        <div class="badge-info" style="color: #2ecc71; border-color: #2ecc7133;"><i class="fas fa-check-circle"></i> PC/MAC</div>
+                    </div>
+
+                    <p class="mod-long-desc">${m.desc}</p>
+
+                    <a href="${m.link}" target="_blank" class="btn-dl-container">
+                        <i class="fas fa-cloud-download-alt"></i> TÉLÉCHARGER LE MOD
+                    </a>
+                </div>
+            `;
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function moveSlide(direction) {
+            const slider = document.getElementById('sliderObj');
+            if(!slider) return;
+            const totalSlides = slider.children.length;
+            currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+            slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+        }
+
+        function loadSidebar() {
+            const side = document.getElementById('sideModList');
+            side.innerHTML = "";
+            catalogueMods.forEach((mod, i) => {
+                side.innerHTML += `
+                    <a href="javascript:void(0)" class="mini-card-side" onclick="showMod(${i})">
+                        <img src="${mod.images[0]}" class="mini-img-side">
+                        <div class="mini-info-side">
+                            <h4>${mod.name}</h4>
+                            <p>${mod.tag}</p>
+                        </div>
+                    </a>
+                `;
+            });
+        }
+
+        showMod(0);
+        loadSidebar();
+    </script>
+
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <a href="index.html" class="logo-text">AGRIFARM</a>
+                    <p>La référence Farming Simulator. Retrouvez les meilleurs mods et nos serveurs officiels.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Explorer</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Accueil</a></li>
+                        <li><a href="mods.html">ModHub FS25</a></li>
+                        <li><a href="topmods.html">Classement</a></li>
+                        <li><a href="serveur.html">Nos Serveurs</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Ressources</h3>
+                    <ul class="footer-links">
+                        <li><a href="tuto.html">Tutoriels</a></li>
+                        <li><a href="team.html">L'Équipe</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Communauté</h3>
+                    <p style="opacity: 0.8; font-size: 0.9rem;">Rejoignez-nous sur Discord pour échanger avec les autres fermiers !</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                &copy; 2026 AgriFarm. Tous droits réservés.
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
