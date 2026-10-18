@@ -27,8 +27,8 @@
       --radius: 16px;
       --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-      /* --- IMAGE DE FOND DU SITE --- */
-      --bg-image: url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1920&q=80');
+      /* --- IMAGE DE FOND DU SITE (RECHERCHE LOCALE / BDD) --- */
+      --bg-image: url('images/fond-site.jpg');
     }
 
     * {
@@ -931,14 +931,14 @@
       <!-- LIGNE SÉPARATRICE -->
       <hr class="section-divider">
 
-      <!-- GALERIE / APERÇU DE LA COMMUNAUTÉ -->
+      <!-- GALERIE / APERÇU DE LA COMMUNAUTÉ (IMAGES LOCALES) -->
       <div>
         <h2 class="section-title">Aperçu de la Communauté</h2>
         <p class="section-subtitle">Découvrez l'ambiance et les projets de notre serveur Discord.</p>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
-          <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80" style="width: 100%; height: 200px; object-fit: cover; border-radius: 12px; border: 1px solid var(--card-border);" alt="Aperçu 1">
-          <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=600&q=80" style="width: 100%; height: 200px; object-fit: cover; border-radius: 12px; border: 1px solid var(--card-border);" alt="Aperçu 2">
-          <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=600&q=80" style="width: 100%; height: 200px; object-fit: cover; border-radius: 12px; border: 1px solid var(--card-border);" alt="Aperçu 3">
+          <img src="images/apercu-1.jpg" style="width: 100%; height: 200px; object-fit: cover; border-radius: 12px; border: 1px solid var(--card-border);" alt="Aperçu 1">
+          <img src="images/apercu-2.jpg" style="width: 100%; height: 200px; object-fit: cover; border-radius: 12px; border: 1px solid var(--card-border);" alt="Aperçu 2">
+          <img src="images/apercu-3.jpg" style="width: 100%; height: 200px; object-fit: cover; border-radius: 12px; border: 1px solid var(--card-border);" alt="Aperçu 3">
         </div>
       </div>
 
@@ -1052,13 +1052,13 @@
     <h2 class="section-title">Offres de Recrutement</h2>
     <p class="section-subtitle">Découvrez nos postes ouverts et tentez votre chance pour rejoindre l'équipe.</p>
 
-    <!-- LISTE DES CARTES DE RECRUTEMENT -->
+    <!-- LISTE DES CARTES DE RECRUTEMENT (IMAGES LOCALES) -->
     <div class="grid-mods">
 
-      <!-- Carte Recrutement 1 (SEUL CADRE OÙ L'ON PEUT POSTULER) -->
+      <!-- Carte Recrutement 1 -->
       <div class="mod-card">
         <div class="mod-img-wrapper">
-          <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=600&q=80" alt="Poste Modérateur">
+          <img src="images/poste-moderateur.jpg" alt="Poste Modérateur">
         </div>
         <div class="mod-details">
           <h3 class="mod-title">Modérateur Discord</h3>
@@ -1072,10 +1072,10 @@
         </div>
       </div>
 
-      <!-- Carte Recrutement 2 (BOUTON DÉSACTIVÉ) -->
+      <!-- Carte Recrutement 2 -->
       <div class="mod-card" style="opacity: 0.7;">
         <div class="mod-img-wrapper">
-          <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=600&q=80" alt="Poste Animation">
+          <img src="images/poste-animateur.jpg" alt="Poste Animation">
         </div>
         <div class="mod-details">
           <h3 class="mod-title">Animateur Discord</h3>
@@ -1089,10 +1089,10 @@
         </div>
       </div>
 
-      <!-- Carte Recrutement 3 (BOUTON DÉSACTIVÉ) -->
+      <!-- Carte Recrutement 3 -->
       <div class="mod-card" style="opacity: 0.7;">
         <div class="mod-img-wrapper">
-          <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80" alt="Poste Développeur">
+          <img src="images/poste-developpeur.jpg" alt="Poste Développeur">
         </div>
         <div class="mod-details">
           <h3 class="mod-title">Développeur Bot & Site</h3>
@@ -1109,7 +1109,7 @@
     </div>
   </section>
 
-  <!-- FORMULAIRE DE CANDIDATURE AVEC LES QUESTIONS MISES À JOUR -->
+  <!-- FORMULAIRE DE CANDIDATURE SUR PAGE DÉDIÉE -->
   <section id="candidature" class="page-section">
     <button class="btn-secondary" onclick="showPage('recrutement')" style="margin-bottom: 2rem;">
       <i class="fa-solid fa-arrow-left"></i> Retour aux offres de recrutement
@@ -1215,10 +1215,10 @@
     <p class="section-subtitle">Parcourez tous nos modules d'extension disponibles.</p>
     <div class="grid-mods">
 
-      <!-- Mod 1 -->
+      <!-- Mod 1 (IMAGE LOCALE) -->
       <div class="mod-card">
         <div class="mod-img-wrapper">
-          <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80" alt="OptiPerformance">
+          <img src="images/mod-optiperformance.jpg" alt="OptiPerformance">
         </div>
         <div class="mod-details">
           <h3 class="mod-title">OptiPerformance</h3>
@@ -1233,10 +1233,10 @@
         </div>
       </div>
 
-      <!-- Mod 2 -->
+      <!-- Mod 2 (IMAGE LOCALE) -->
       <div class="mod-card">
         <div class="mod-img-wrapper">
-          <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=600&q=80" alt="Shaders HD">
+          <img src="images/mod-shaders-hd.jpg" alt="Shaders HD">
         </div>
         <div class="mod-details">
           <h3 class="mod-title">Shaders HD</h3>
@@ -1251,10 +1251,10 @@
         </div>
       </div>
 
-      <!-- Mod 3 -->
+      <!-- Mod 3 (IMAGE LOCALE) -->
       <div class="mod-card">
         <div class="mod-img-wrapper">
-          <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=600&q=80" alt="MiniMap Pro">
+          <img src="images/mod-minimap.jpg" alt="MiniMap Pro">
         </div>
         <div class="mod-details">
           <h3 class="mod-title">MiniMap Pro</h3>
@@ -1279,10 +1279,10 @@
 
     <div class="grid-mods">
 
-      <!-- Pack 1 -->
+      <!-- Pack 1 (IMAGE LOCALE) -->
       <div class="mod-card">
         <div class="mod-img-wrapper">
-          <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=600&q=80" alt="Pack Ultimate">
+          <img src="images/pack-exclusif.jpg" alt="Pack Ultimate">
         </div>
         <div class="mod-details">
           <h3 class="mod-title">Pack Exclusif Communauté</h3>
@@ -1297,10 +1297,10 @@
         </div>
       </div>
 
-      <!-- Pack 2 -->
+      <!-- Pack 2 (IMAGE LOCALE) -->
       <div class="mod-card">
         <div class="mod-img-wrapper">
-          <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=600&q=80" alt="Pack Aventure">
+          <img src="images/pack-aventure.jpg" alt="Pack Aventure">
         </div>
         <div class="mod-details">
           <h3 class="mod-title">Pack Aventure & Visuels</h3>
