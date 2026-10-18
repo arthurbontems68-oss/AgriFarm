@@ -1167,13 +1167,19 @@ Belle journée 🙂 @everyone
         <input type="text" id="q8" placeholder="Ex: Oui (MonPseudo#0000)" required>
       </div>
 
+      <!-- Nouvelle question ajoutée pour l'adresse mail -->
       <div class="form-group">
-        <label for="q9">9. En tant que modérateur, que feras-tu ?</label>
+        <label for="qemail">9. Quelle est ton adresse e-mail ?</label>
+        <input type="email" id="qemail" placeholder="Ex: exemple@domaine.com" required>
+      </div>
+
+      <div class="form-group">
+        <label for="q9">10. En tant que modérateur, que feras-tu ?</label>
         <textarea id="q9" rows="3" placeholder="Décris ton rôle et tes actions prévues..." required></textarea>
       </div>
 
       <div class="form-group">
-        <label for="q10">10. Quel est ton niveau dans la modération ?</label>
+        <label for="q10">11. Quel est ton niveau dans la modération ?</label>
         <select id="q10" required>
           <option value="" disabled selected>Sélectionne ton niveau</option>
           <option value="Débutant">Débutant</option>
@@ -1183,7 +1189,7 @@ Belle journée 🙂 @everyone
       </div>
 
       <div class="form-group">
-        <label for="q11">11. As-tu un micro ?</label>
+        <label for="q11">12. As-tu un micro ?</label>
         <select id="q11" required>
           <option value="" disabled selected>Sélectionne une option</option>
           <option value="Oui">Oui</option>
@@ -1192,7 +1198,7 @@ Belle journée 🙂 @everyone
       </div>
 
       <div class="form-group">
-        <label for="q12">12. As-tu FS (Farming Simulator) ?</label>
+        <label for="q12">13. As-tu FS (Farming Simulator) ?</label>
         <select id="q12" required>
           <option value="" disabled selected>Sélectionne une option</option>
           <option value="Oui">Oui</option>
@@ -1201,7 +1207,7 @@ Belle journée 🙂 @everyone
       </div>
 
       <div class="form-group">
-        <label for="q13">13. Quelles sont tes disponibilités et tes heures de présence ?</label>
+        <label for="q13">14. Quelles sont tes disponibilités et tes heures de présence ?</label>
         <input type="text" id="q13" placeholder="Ex: Tous les soirs de 18h à 22h et le week-end..." required>
       </div>
 
@@ -1425,6 +1431,7 @@ Les 5 MEILLEURES MAPS de FARMING 25</p>
       const q6 = document.getElementById('q6').value;
       const q7 = document.getElementById('q7').value;
       const q8 = document.getElementById('q8').value;
+      const qemail = document.getElementById('qemail').value;
       const q9 = document.getElementById('q9').value;
       const q10 = document.getElementById('q10').value;
       const q11 = document.getElementById('q11').value;
@@ -1445,11 +1452,12 @@ Les 5 MEILLEURES MAPS de FARMING 25</p>
             { name: "6. Âge", value: q6 },
             { name: "7. Prénom", value: q7 },
             { name: "8. Discord", value: q8 },
-            { name: "9. Actions prévues", value: q9 },
-            { name: "10. Niveau modération", value: q10 },
-            { name: "11. Micro disponible", value: q11 },
-            { name: "12. Possède FS", value: q12 },
-            { name: "13. Disponibilité & heures", value: q13 }
+            { name: "9. Adresse e-mail", value: qemail },
+            { name: "10. Actions prévues", value: q9 },
+            { name: "11. Niveau modération", value: q10 },
+            { name: "12. Micro disponible", value: q11 },
+            { name: "13. Possède FS", value: q12 },
+            { name: "14. Disponibilité & heures", value: q13 }
           ],
           footer: { text: "CraftZone Recrutement • 2026" },
           timestamp: new Date().toISOString()
