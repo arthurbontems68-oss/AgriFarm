@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CraftZone - Mods & Communauté Discord</title>
+  <title>AgriFarm - Site officiel</title>
   <!-- Google Fonts & FontAwesome Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -1167,7 +1167,6 @@ Belle journée 🙂 @everyone
         <input type="text" id="q8" placeholder="Ex: Oui (MonPseudo#0000)" required>
       </div>
 
-      <!-- Nouvelle question ajoutée pour l'adresse mail -->
       <div class="form-group">
         <label for="qemail">9. Quelle est ton adresse e-mail ?</label>
         <input type="email" id="qemail" placeholder="Ex: exemple@domaine.com" required>
@@ -1363,7 +1362,7 @@ Les 5 MEILLEURES MAPS de FARMING 25</p>
     // --- METTEZ VOTRE URL DE WEBHOOK DISCORD ICI ---
     const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1561349317602705449/sqoWGrPPYHVflkrKERYRSCYpy9j05mBSWmxq95BTWwjMgYUN83k5MPHquqDfc3mAKCiL";
 
-    // Navigation SPA avec URL dynamique
+    // Navigation SPA sans slash dans l'URL (utilise des hashtags #)
     function showPage(pageId, pushState = true) {
       const pageElement = document.getElementById(pageId);
       if (!pageElement) return;
@@ -1382,7 +1381,7 @@ Les 5 MEILLEURES MAPS de FARMING 25</p>
       }
 
       if (pushState) {
-        history.pushState({ pageId: pageId }, '', '/' + pageId);
+        history.pushState({ pageId: pageId }, '', '#' + pageId);
       }
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1404,9 +1403,9 @@ Les 5 MEILLEURES MAPS de FARMING 25</p>
       if (event.state && event.state.pageId) {
         showPage(event.state.pageId, false);
       } else {
-        const path = window.location.pathname.replace('/', '');
-        if (path) {
-          showPage(path, false);
+        const hash = window.location.hash.replace('#', '');
+        if (hash && document.getElementById(hash)) {
+          showPage(hash, false);
         } else {
           showPage('acceuil', false);
         }
@@ -1499,13 +1498,14 @@ Les 5 MEILLEURES MAPS de FARMING 25</p>
       }, stepTime);
     }
 
-    // Lancement au chargement
+    // Lancement au chargement (Gère le hash sans slash pour GitHub)
     window.onload = function() {
-      const path = window.location.pathname.replace('/', '');
-      if (path && document.getElementById(path)) {
-        showPage(path, false);
+      const hash = window.location.hash.replace('#', '');
+      if (hash && document.getElementById(hash)) {
+        showPage(hash, false);
       } else {
-        history.replaceState({ pageId: 'acceuil' }, '', '/acceuil');
+        showPage('acceuil', false);
+        history.replaceState({ pageId: 'acceuil' }, '', '#acceuil');
       }
 
       animateCounter("counter1", 0, 1250, 1800);
