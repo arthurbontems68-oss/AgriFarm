@@ -572,12 +572,20 @@
       display: flex;
       flex-direction: column;
       transition: var(--transition);
+      scroll-margin-top: 100px; /* Permet un bon décalage lors du saut d'ancre */
     }
 
     .mod-card:hover {
       transform: translateY(-5px);
       border-color: var(--yellow-primary);
       box-shadow: var(--shadow-lg);
+    }
+
+    /* Effet visuel quand la carte est ciblée via le lien Discord */
+    .mod-card:target {
+      border-color: var(--yellow-primary);
+      box-shadow: 0 0 25px rgba(217, 119, 6, 0.6);
+      transform: scale(1.02);
     }
 
     .mod-img-wrapper {
@@ -667,25 +675,23 @@
       color: white;
     }
 
-    .btn-share {
-      padding: 12px 16px;
-      background: var(--discord-color);
-      color: #FFFFFF;
-      border: none;
+    .btn-copy-link {
+      padding: 0 14px;
+      background: var(--bg-dark);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
       border-radius: 10px;
-      font-weight: 700;
       cursor: pointer;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
       transition: var(--transition);
-      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .btn-share:hover {
-      background: #4752C4;
-      transform: translateY(-2px);
+    .btn-copy-link:hover {
+      background: var(--discord-color);
+      border-color: var(--discord-color);
+      color: #FFFFFF;
     }
 
     .btn-disabled {
@@ -1264,7 +1270,7 @@ Belle journée 🙂 @everyone
     <div class="grid-mods">
 
       <!-- Mod 1 -->
-      <div class="mod-card">
+      <div class="mod-card" id="mod-1">
         <div class="mod-img-wrapper">
           <img src="pompier.png" alt="Iveco Sp EPA">
         </div>
@@ -1279,15 +1285,15 @@ Belle journée 🙂 @everyone
             <a href="https://mgdrive.kdns.fr/?fileId=1VSqlSMCLr20XOgcjVt3UpKY_pBrW6twJ&dl=1" target="_blank" class="btn-download">
               <i class="fa-solid fa-download"></i> Télécharger
             </a>
-            <button class="btn-share" onclick="shareOnDiscord('Iveco Sp EPA', 'Repost', '0.15 Go', 'Iveco Sapeur Pompier en EPA', 'https://mgdrive.kdns.fr/?fileId=1VSqlSMCLr20XOgcjVt3UpKY_pBrW6twJ&dl=1', 'pompier.png')" title="Partager sur Discord">
-              <i class="fa-brands fa-discord"></i>
+            <button class="btn-copy-link" onclick="copyCardLink('mod-1', 'Iveco Sp EPA')" title="Copier le lien Discord">
+              <i class="fa-solid fa-link"></i>
             </button>
           </div>
         </div>
       </div>
 
       <!-- Mod 2 -->
-      <div class="mod-card">
+      <div class="mod-card" id="mod-2">
         <div class="mod-img-wrapper">
           <img src="image.png" alt="Smur Belge">
         </div>
@@ -1302,15 +1308,15 @@ Belle journée 🙂 @everyone
             <a href="https://agrifarm-tau.vercel.app/mods" target="_blank" class="btn-download">
               <i class="fa-solid fa-download"></i> Télécharger
             </a>
-            <button class="btn-share" onclick="shareOnDiscord('Smur Belge', 'MultiGame', '1.2 Go', 'Smur Belge', 'https://agrifarm-tau.vercel.app/mods', 'image.png')" title="Partager sur Discord">
-              <i class="fa-brands fa-discord"></i>
+            <button class="btn-copy-link" onclick="copyCardLink('mod-2', 'Smur Belge')" title="Copier le lien Discord">
+              <i class="fa-solid fa-link"></i>
             </button>
           </div>
         </div>
       </div>
 
       <!-- Mod 3 -->
-      <div class="mod-card">
+      <div class="mod-card" id="mod-3">
         <div class="mod-img-wrapper">
           <img src="mod-minimap.jpg" alt="MiniMap Pro">
         </div>
@@ -1325,8 +1331,8 @@ Belle journée 🙂 @everyone
             <a href="VOTRE_LIEN_DE_TELECHARGEMENT_ICI" target="_blank" class="btn-download">
               <i class="fa-solid fa-download"></i> Télécharger
             </a>
-            <button class="btn-share" onclick="shareOnDiscord('MiniMap Pro', 'MapMaker', '0.05 Go', 'Affiche une carte détaillée en direct avec tous vos repères et alliés enregistrés.', 'VOTRE_LIEN_DE_TELECHARGEMENT_ICI', 'mod-minimap.jpg')" title="Partager sur Discord">
-              <i class="fa-brands fa-discord"></i>
+            <button class="btn-copy-link" onclick="copyCardLink('mod-3', 'MiniMap Pro')" title="Copier le lien Discord">
+              <i class="fa-solid fa-link"></i>
             </button>
           </div>
         </div>
@@ -1343,7 +1349,7 @@ Belle journée 🙂 @everyone
     <div class="grid-mods">
 
       <!-- Pack 1 -->
-      <div class="mod-card">
+      <div class="mod-card" id="pack-1">
         <div class="mod-img-wrapper">
           <img src="modsrealist.jpg" alt="Pack mods réalistes">
         </div>
@@ -1358,15 +1364,15 @@ Belle journée 🙂 @everyone
             <a href="https://mega.nz/folder/QhZ2gKTK#OVuQ5KMOygqEGcTJxBzXSg" target="_blank" class="btn-download">
               <i class="fa-solid fa-download"></i> Télécharger le Pack
             </a>
-            <button class="btn-share" onclick="shareOnDiscord('Pack mods réalistes', 'MultiGame', '3.5 Go', 'Ces 5 MODS vont RENDRE ton FS25 encore PLUS REALISTE', 'https://mega.nz/folder/QhZ2gKTK#OVuQ5KMOygqEGcTJxBzXSg', 'modsrealist.jpg')" title="Partager sur Discord">
-              <i class="fa-brands fa-discord"></i>
+            <button class="btn-copy-link" onclick="copyCardLink('pack-1', 'Pack mods réalistes')" title="Copier le lien Discord">
+              <i class="fa-solid fa-link"></i>
             </button>
           </div>
         </div>
       </div>
 
       <!-- Pack 2 -->
-      <div class="mod-card">
+      <div class="mod-card" id="pack-2">
         <div class="mod-img-wrapper">
           <img src="5map.jpg" alt="5 MEILLEURES MAPS">
         </div>
@@ -1381,15 +1387,15 @@ Belle journée 🙂 @everyone
             <a href="VOTRE_LIEN_DE_TELECHARGEMENT_ICI" target="_blank" class="btn-download">
               <i class="fa-solid fa-download"></i> Télécharger le Pack
             </a>
-            <button class="btn-share" onclick="shareOnDiscord('5 MEILLEURES MAPS', 'MultiGame', '2.1 Go', 'Les 5 MEILLEURES MAPS de FARMING 25', 'VOTRE_LIEN_DE_TELECHARGEMENT_ICI', '5map.jpg')" title="Partager sur Discord">
-              <i class="fa-brands fa-discord"></i>
+            <button class="btn-copy-link" onclick="copyCardLink('pack-2', '5 MEILLEURES MAPS')" title="Copier le lien Discord">
+              <i class="fa-solid fa-link"></i>
             </button>
           </div>
         </div>
       </div>
 
       <!-- Pack 3 -->
-      <div class="mod-card">
+      <div class="mod-card" id="pack-3">
         <div class="mod-img-wrapper">
           <img src="serieytb.jpg" alt="Pack mods réalistes">
         </div>
@@ -1399,13 +1405,13 @@ Belle journée 🙂 @everyone
             <span><i class="fa-solid fa-user"></i> MultiGame</span>
             <span><i class="fa-solid fa-hard-drive"></i> 3.5 Go</span>
           </div>
-          <p class="mod-description">Pack de mods de la serie YouTube : Les Petits Agris </p>
+          <p class="mod-description">Pack de mods Les Petits Agris. Serie YouTube </p>
           <div class="card-actions">
             <a href="lienici" target="_blank" class="btn-download">
-              <i class="fa-solid fa-download"></i> Bientot Disponible
+              <i class="fa-solid fa-download"></i> Bientot disponible
             </a>
-            <button class="btn-share" onclick="shareOnDiscord('Pack Les Petits Agris', 'MultiGame', '3.5 Go', 'Pack de mods de la serie YouTube : Les Petits Agris', 'Bientot Dispo', 'serieytb.jpg')" title="Partager sur Discord">
-              <i class="fa-brands fa-discord"></i>
+            <button class="btn-copy-link" onclick="copyCardLink('pack-3', 'Pack Les Petits Agris')" title="Copier le lien Discord">
+              <i class="fa-solid fa-link"></i>
             </button>
           </div>
         </div>
@@ -1452,50 +1458,17 @@ Belle journée 🙂 @everyone
     // --- METTEZ VOTRE URL DE WEBHOOK DISCORD ICI ---
     const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1561349317602705449/sqoWGrPPYHVflkrKERYRSCYpy9j05mBSWmxq95BTWwjMgYUN83k5MPHquqDfc3mAKCiL";
 
-    // Fonction pour partager un Mod/Pack sur Discord
-    function shareOnDiscord(title, author, size, description, downloadUrl, imagePath) {
-      if (!DISCORD_WEBHOOK_URL || DISCORD_WEBHOOK_URL.includes("VOTRE_WEBHOOK_DISCORD_ICI")) {
-        alert("Attention : Veuillez configurer l'URL du webhook Discord !");
-        return;
-      }
+    // Copier le lien direct avec ancre vers le mod/pack
+    function copyCardLink(cardId, cardTitle) {
+      // Construit l'URL propre avec l'ancre (ex: https://agrifarm.kdns.fr/#mod-1)
+      const baseUrl = window.location.origin + window.location.pathname;
+      const fullLink = `${baseUrl}#mods`; // Assure d'être sur la page mods
+      const anchorLink = `${baseUrl}#${cardId}`;
 
-      // Convertir le chemin d'image relatif en URL absolue pour Discord
-      let fullImageUrl = imagePath;
-      if (!imagePath.startsWith('http://') && !imagePath.startsWith('https://')) {
-        fullImageUrl = window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1) + imagePath;
-      }
-
-      const payload = {
-        username: "AgriFarm Share",
-        embeds: [{
-          title: "📦 Partage de Mod / Pack : " + title,
-          description: description,
-          color: 14251782, // Couleur Ambre / Jaune
-          fields: [
-            { name: "👤 Auteur", value: author, inline: true },
-            { name: "💾 Taille", value: size, inline: true },
-            { name: "🔗 Lien de téléchargement", value: `[Télécharger ici](${downloadUrl})` }
-          ],
-          image: {
-            url: fullImageUrl
-          },
-          footer: { text: "AgriFarm Community • Mod Sharing" },
-          timestamp: new Date().toISOString()
-        }]
-      };
-
-      fetch(DISCORD_WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      }).then(response => {
-        if(response.ok) {
-          alert(`Le mod "${title}" a été partagé avec succès sur Discord !`);
-        } else {
-          alert("Erreur lors du partage sur Discord.");
-        }
-      }).catch(() => {
-        alert("Erreur de connexion avec le webhook Discord.");
+      navigator.clipboard.writeText(anchorLink).then(() => {
+        alert(`Lien du mod "${cardTitle}" copié ! Vous pouvez le coller sur Discord.`);
+      }).catch(err => {
+        console.error('Erreur lors de la copie :', err);
       });
     }
 
@@ -1535,19 +1508,31 @@ Belle journée 🙂 @everyone
       showPage('candidature');
     }
 
-    // Gestion du bouton Retour / Suivant du navigateur
+    // Gestion du bouton Retour / Suivant du navigateur et des ancres
     window.onpopstate = function(event) {
-      if (event.state && event.state.pageId) {
-        showPage(event.state.pageId, false);
-      } else {
-        const hash = window.location.hash.replace('#', '');
-        if (hash && document.getElementById(hash)) {
-          showPage(hash, false);
-        } else {
-          showPage('acceuil', false);
-        }
-      }
+      handleInitialHash();
     };
+
+    function handleInitialHash() {
+      const hash = window.location.hash.replace('#', '');
+      if (!hash) {
+        showPage('acceuil', false);
+        return;
+      }
+
+      // Si le hash correspond à un identifiant de carte mod/pack (ex: #mod-1)
+      const targetCard = document.getElementById(hash);
+      if (targetCard) {
+        showPage('mods', false);
+        setTimeout(() => {
+          targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 200);
+      } else if (document.getElementById(hash)) {
+        showPage(hash, false);
+      } else {
+        showPage('acceuil', false);
+      }
+    }
 
     // Envoi de la candidature sur le canal Discord via Webhook
     function sendDiscordApplication(event) {
@@ -1635,15 +1620,9 @@ Belle journée 🙂 @everyone
       }, stepTime);
     }
 
-    // Lancement au chargement (Gère le hash sans slash pour GitHub)
+    // Lancement au chargement
     window.onload = function() {
-      const hash = window.location.hash.replace('#', '');
-      if (hash && document.getElementById(hash)) {
-        showPage(hash, false);
-      } else {
-        showPage('acceuil', false);
-        history.replaceState({ pageId: 'acceuil' }, '', '#acceuil');
-      }
+      handleInitialHash();
 
       animateCounter("counter1", 0, 1250, 1800);
       animateCounter("counter2", 0, 4800, 2000);
